@@ -1,0 +1,205 @@
+---
+title: "Taxonomic_Barplot"
+output: html_document
+date: "2023-04-04"
+---
+
+```{r warning=FALSE, message=FALSE}
+library(ape)
+library(vegan)
+library(plyr)
+library(dplyr)
+library(scales)
+library(grid)
+library(reshape2)
+library(phyloseq)
+library(magrittr)
+library(ggplot2)
+library(ggpubr)
+library(data.table)
+library(tidyr)
+library(tidyverse)
+library(multcompView)
+library(VennDiagram)
+library(car)
+#library(Hmisc)
+```
+
+
+```{r}
+otus <- read.table("DroughtITS.final_fix.txt",header=T,sep="\t",row.names=1)
+otumat <- as(as.matrix(otus), "matrix")
+OTU = otu_table(otumat, taxa_are_rows = TRUE)
+```
+
+###STEP4: Import taxonomy table for analysis using Phyloseq
+This taxonomy table was created from STEP2.
+```{r}
+taxmat <- read.table("DroughtITS.taxonomy.fix.txt", header=T,sep="\t",row.names=1)
+taxmat <- as(as.matrix(taxmat),"matrix")
+TAX = tax_table(taxmat)
+```
+
+###STEP2: Import tree file for analysis using Phyloseq
+
+```{r warning=FALSE}
+treefile = "DroughtITS.tree.phy"
+tree = read.tree(treefile)
+```
+
+###STEP3: Import mapping file for analysis using Phyloseq
+
+1.Check mapping file before import to R, R will automatically change sample name that starts with number or contain “-” in sample name. If you get error in this step, you should check sample name first. 
+
+2.First column of first row should not start with #, R will not read the first row that starts with #
+
+3. You can choose which samples to include in analysis by indicating specific group in the column
+
+```{r}
+meta = read.table("DroughtITS.mapping_file.fix.txt",header=TRUE,row.names=1,sep="\t",stringsAsFactors=FALSE)
+```
+
+Check if your metadata file has been import successfully and correctly, the output will show a table of your metadata file (mapping file). *If you do not have header, you might start your first row with # (remove # and reload your mapping file).
+
+```{r}
+head(meta)
+```
+
+Construct sample_data-class using imported metadata
+```{r warning=FALSE}
+sampleData <- sample_data(meta)
+```
+
+
+###STEP4: Construct Phyloseq object
+To construct phyloseq object, otu table, taxonomy table, and sampleData are required. Phylogenetic tree can be included, but it is not necessary for constructing phyloseq object.
+Construct Phyloseq object called "Physeq"
+
+```{r warning=FALSE}
+physeq = phyloseq(OTU,TAX,sampleData)
+```
+
+###STEP8: Check phyloseq object
+This should indicate that your physeq is a "phyloseq-class experiment-level object"
+
+```{r}
+physeq
+```
+
+```{r}
+#physeq = subset_taxa(physeq, Kingdom != "Rhizaria")
+#physeq = subset_taxa(physeq, Kingdom != "Chromista")
+#physeq = subset_taxa(physeq, Kingdom != "Eukaryota")
+physeq = subset_taxa(physeq, Kingdom == "Fungi")
+physeq
+```
+
+
+```{r}
+physeq.zone = subset_samples(physeq)
+```
+
+##Make taxonomy table into a matrix and relabel NA as unknown
+```{r}
+tax.fun <- as(tax_table(physeq.zone),"matrix")
+head(tax.fun)
+tax.fun[is.na(tax.fun)] <- "Unknown"
+head(tax.fun)
+```
+
+###Convert tax table back to phyloseq object and generate phyloseq object with new tax table
+```{r}
+TAX.fun <- tax_table(tax.fun)
+fun.3 <- phyloseq(sample_data(physeq.zone),otu_table(physeq.zone),TAX.fun)
+fun.3
+```
+
+
+```{r}
+glom.fun <- speedyseq::tax_glom(fun.3,taxrank = "Order")
+glom.fun
+```
+
+```{r}
+head(tax_table(glom.fun))
+```
+
+
+##Transform OTU table to show relative abundance
+##Samples can also be merged together by a variable in the mapping file
+
+```{r}
+
+fun.abund <- merge_samples(glom.fun, "zone")
+sample_data(fun.abund)$zone <- factor(sample_names(fun.abund))
+fun.abund = transform_sample_counts(fun.abund, function(x) x / sum(x))
+fun.abund
+
+```
+
+
+##Merge taxonomic data with OTU table and mapping file (Can alter code to change taxonomic rank to Order, Class, Family, etc.) and change Phylum column from a factor to a character.
+
+```{r}
+data_glom.fun <- speedyseq::psmelt(fun.abund)
+data_glom.fun$Order <- as.character(data_glom.fun$Order)
+```
+
+##If a phylum has less than 1% abundance, phylum name is changed to <1% abund.
+
+```{r}
+data_glom.fun$Order[data_glom.fun$Abundance < 0.01] <- "<0.1% abund."
+```
+
+Count the levels present in the Phylum column
+
+```{r}
+Count = length(unique(data_glom.fun$Order))
+Count
+```
+
+Print out unique phyla names for insertion into barplots in next step.
+
+```{r}
+unique((data_glom.fun$Order))
+```
+
+Create levels of phyla represented in barplot. 
+
+
+```{r}
+data_glom.fun$zone <- factor(data_glom.fun$zone, levels = c('one', 'two', 'three', 'four', 'five', 'six', 'seven' ,'eight')) 
+```
+
+
+```{r fig.height=7, fig.width=12, fig.align="center"}
+# The palette with black:
+cbbPalette <- c("#B2182B", "#E7298A", "#F4A582", "#FDDBC7", "#D1E5F0", "#92C5DE", "#4393C3", "darkgreen", "#D95F02", "#7570B3", "#D6604D", "#66A61E", "#E6AB02", "darkgoldenrod1","tomato2", "#E69F00", "#56B4E9", "#F0E442", "#0072B2", "darkblue", "lightsalmon", "black", "purple3","plum2", "brown", "aquamarine4","lavenderblush2","snow3", "darkblue", "darkgoldenrod1", "lightpink", "darkorchid", "darkolivegreen1", "black","lightskyblue", "darkgreen", "deeppink")
+taxcom_layer_pl = ggplot(data = data_glom.fun, mapping = aes_string(x = "zone", y = "Abundance", fill = "Order" )) + 
+  geom_bar(stat="identity", position="fill") + 
+  ggtitle("Fungal Taxonomic Composition (Order level) by Zone")+
+  theme_pubr(border= TRUE) + 
+  theme(plot.title = element_text(hjust = 0.5)) + scale_fill_manual(values = cbbPalette) +  
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+print(taxcom_layer_pl + theme(legend.position="bottom") + guides(fill=guide_legend(nrow=3)))
+
+```
+
+```{r}
+png("./Figures/Taxa_Order_level_zone.png", units="in", width = 15, height = 7.5, res = 600 )
+taxcom_layer_pl + theme(legend.position="bottom") + guides(fill=guide_legend(nrow=3)) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+dev.off()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

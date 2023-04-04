@@ -1,0 +1,158 @@
+---
+title: "Rare_Curve"
+output:
+  word_document: default
+  html_document: default
+date: "2023-04-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###STEP1: Load all necessary packages for analysis
+More information about Phyloseq can be found at the following link: [Phyloseq](https://joey711.github.io/phyloseq/)
+If you get error in this step, you probably need to install any packages which causes error.
+
+```{r warning=FALSE, message=FALSE}
+library(ape)
+library(vegan)
+library(plyr)
+library(dplyr)
+library(scales)
+library(grid)
+library(reshape2)
+library(phyloseq)
+library(magrittr)
+library(ggplot2)
+library(ggpubr)
+library(data.table)
+library(tidyr)
+library(tidyverse)
+library(multcompView)
+```
+
+
+```{r}
+otus <- read.table("DroughtITS.final_fix.txt",header=T,sep="\t",row.names=1)
+otumat <- as(as.matrix(otus), "matrix")
+OTU = otu_table(otumat, taxa_are_rows = TRUE)
+```
+
+
+```{r}
+taxmat <- read.table("DroughtITS.taxonomy.fix.txt", header=T,sep="\t",row.names=1)
+taxmat <- as(as.matrix(taxmat),"matrix")
+TAX = tax_table(taxmat)
+```
+
+
+```{r warning=FALSE}
+treefile = "DroughtITS.tree.phy"
+tree = read.tree(treefile)
+```
+
+
+```{r warning=FALSE}
+physeq = phyloseq(OTU,TAX,sampleData)
+```
+
+
+```{r warning=FALSE}
+physeq
+```
+
+
+```{r }
+physeq.prune = prune_taxa(taxa_sums(physeq) > 1, physeq)
+```
+
+```{r warning=FALSE}
+physeq.prune
+```
+
+###STEP10: Plot read counts to check dataset
+#Check read counts: any samples that have very low reads should be removed.
+#[Ref](http://evomics.org/wp-content/uploads/2016/01/phyloseq-Lab-01-Answers.html)
+
+```{r}
+readcount = data.table(as(sample_data(physeq.prune), "data.frame"),
+                 TotalReads = sample_sums(physeq.prune), 
+                 keep.rownames = TRUE)
+setnames(readcount, "rn", "SampleID")
+
+```
+
+#TotalReads of all the samples can be in this table (select only SampleID and TotalReads columns). In order to check samples with low number of reads, "order()" can be used to sort "TotalReads" column. In this dataset, N55.Rhizo has very low number of reads, so will will filter this sample out using the next minimum number of reads.
+
+```{r}
+readcount = readcount[order(readcount$TotalReads), c("SampleID", "TotalReads")]
+```
+
+```{r}
+readcount
+```
+
+```{r warning=FALSE}
+set.seed(1)
+physeq.prune.rarefy = rarefy_even_depth(physeq.prune, sample.size = 14000, replace = FALSE, trimOTUs = FALSE)
+physeq.prune.rarefy
+```
+
+###STEP11: Rarefaction curve
+Extract OTU table, transpose and convert to data frame
+Extract OTU table from phyloseq object as data frame and use vegan to calculate rarefaction curve
+```{r}
+otu.rare <- otu_table(physeq.prune.rarefy)
+otu.rare <- as.data.frame(t(otu.rare))
+sample_names <- rownames(otu.rare)
+
+#vegan rarecurve 
+otu.rarecurve <- rarecurve(otu.rare, step = 500, sample = 30000, label = T)
+```
+
+```{r}
+rare <- lapply(otu.rarecurve, function(x){
+  b <- as.data.frame(x)
+  b <- data.frame(OTU = b[,1], Sample.size = rownames(b))
+  b$Sample.size <- as.numeric(gsub("N", "",  b$Sample.size))
+  return(b)
+})
+```
+label list
+```{r}
+names(rare) <- sample_names
+```
+convert to data frame
+```{r}
+#tidyverse
+rare <- map_dfr(rare, function(x){
+  z <- data.frame(x)
+  return(z)
+}, .id = "sample")
+```
+
+```{r}
+head(rare)
+```
+
+Plot rarecurve using ggplot
+
+```{r}
+ggplot(data = rare)+
+  geom_line(aes(x = Sample.size, y = OTU, color = sample), show.legend = FALSE)+
+  scale_x_continuous(labels =  waiver()) + theme_bw() + ggtitle("Fungal Rarefaction Curve")+
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Save ggplot as pdf to figures folder using the full path
+
+```{r}
+pdf("./Figures/Fungal_Rarefaction_Curve.pdf", width = 8, height = 5 )
+ggplot(data = rare)+
+  geom_line(aes(x = Sample.size, y = OTU, color = sample), show.legend = FALSE)+
+  scale_x_continuous(labels =  waiver()) + theme_bw() + ggtitle("Fungal Rarefaction Curve")+
+  theme(plot.title = element_text(hjust = 0.5))
+dev.off()
+```
+

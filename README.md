@@ -11,3 +11,6 @@ This is a repository for fungal diversity investigation in Thailand repeated dro
 ## Note
 - AMPtk resutls are available at `/rhome/npomb001/bigdata/Drought_land_23`
 - [AMPtk documentation](https://amptk.readthedocs.io/en/latest/)
+
+
+Update

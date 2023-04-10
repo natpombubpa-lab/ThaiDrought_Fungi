@@ -47,7 +47,7 @@ ASV45	Fungi	Ascomycota	Dothideomycetes	Pleosporales	Cucurbitariaceae	Pyrenochaet
 ASV46	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Aspergillaceae	Penicillium	Penicillium miczynskii
 ASV47	Fungi	Basidiomycota	Tremellomycetes	Trichosporonales	Trichosporonaceae	Apiotrichum	Apiotrichum dehoogii
 ASV48	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Aspergillaceae	Penicillium	NA
-ASV49	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	NA
+ASV49	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	Fusarium sp.
 ASV50	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Hypocreaceae	Trichoderma	NA
 ASV51	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Aspergillaceae	Penicillium	Penicillium simplicissimum
 ASV52	Fungi	Ascomycota	Dothideomycetes	Pleosporales	NA	NA	NA
@@ -266,7 +266,7 @@ ASV264	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Trichocomaceae	Talaromyces	Tal
 ASV265	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Trichocomaceae	NA	NA
 ASV266	Fungi	Ascomycota	Pezizomycetes	Pezizales	Ascodesmidaceae	Eleutherascus	Eleutherascus lectardii
 ASV267	NA	NA	NA	NA	NA	NA	NA
-ASV268	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	NA
+ASV268	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	Fusarium sp.
 ASV269	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	Acremonium pinkertoniae
 ASV270	Fungi	NA	NA	NA	NA	NA	NA
 ASV271	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Trichocomaceae	Talaromyces	NA
@@ -557,7 +557,7 @@ ASV555	Fungi	Calcarisporiellomycota	Calcarisporiellomycetes	Calcarisporiellales	
 ASV556	Fungi	Ascomycota	Eurotiomycetes	NA	NA	NA	NA
 ASV557	Fungi	Ascomycota	Sordariomycetes	Xylariales	Apiosporaceae	Arthrinium	NA
 ASV558	Fungi	NA	NA	NA	NA	NA	NA
-ASV559	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	NA
+ASV559	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	Acremonium sp.
 ASV560	Fungi	Ascomycota	Sordariomycetes	Trichosphaeriales	Trichosphaeriaceae	Nigrospora	Nigrospora oryzae
 ASV561	Fungi	Ascomycota	Orbiliomycetes	NA	NA	NA	NA
 ASV562	Fungi	Basidiomycota	Cystobasidiomycetes	NA	NA	NA	NA
@@ -777,7 +777,7 @@ ASV775	NA	NA	NA	NA	NA	NA	NA
 ASV776	Fungi	Basidiomycota	Agaricomycetes	Agaricales	Entolomataceae	Entoloma	NA
 ASV777	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Stachybotryaceae	Alfaria	Alfaria terrestris
 ASV778	Fungi	Ascomycota	Eurotiomycetes	Onygenales	NA	Spiromastix	Spiromastix warcupii
-ASV779	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	NA
+ASV779	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	Fusarium sp.
 ASV780	Fungi	NA	NA	NA	NA	NA	NA
 ASV781	Fungi	Basidiomycota	Agaricomycetes	Agaricales	Agaricaceae	NA	NA
 ASV782	Fungi	Ascomycota	Dothideomycetes	Pleosporales	Massarinaceae	Stagonospora	NA
@@ -830,7 +830,7 @@ ASV828	Fungi	NA	NA	NA	NA	NA	NA
 ASV829	Fungi	Ascomycota	Dothideomycetes	Pleosporales	Phaeosphaeriaceae	Phaeosphaeria	Phaeosphaeria sinensis
 ASV830	Fungi	NA	NA	NA	NA	NA	NA
 ASV831	Fungi	Basidiomycota	Agaricomycetes	NA	NA	NA	NA
-ASV832	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	NA
+ASV832	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	Fusarium sp.
 ASV833	Fungi	NA	NA	NA	NA	NA	NA
 ASV834	Fungi	Rozellomycota	NA	NA	NA	NA	NA
 ASV835	Fungi	Ascomycota	Sordariomycetes	Coniochaetales	NA	NA	NA
@@ -967,7 +967,7 @@ ASV965	Fungi	Ascomycota	Dothideomycetes	Pleosporales	Cucurbitariaceae	Pyrenochae
 ASV966	Fungi	NA	NA	NA	NA	NA	NA
 ASV967	Fungi	NA	NA	NA	NA	NA	NA
 ASV968	Fungi	Ascomycota	Dothideomycetes	Capnodiales	Cladosporiaceae	Cladosporium	NA
-ASV969	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	NA
+ASV969	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	Fusarium sp.
 ASV970	Fungi	Ascomycota	Dothideomycetes	NA	NA	NA	NA
 ASV971	Fungi	NA	NA	NA	NA	NA	NA
 ASV972	Fungi	Ascomycota	Dothideomycetes	Pleosporales	NA	Polyschema	Polyschema sclerotigenum
@@ -1082,7 +1082,7 @@ ASV1080	Fungi	NA	NA	NA	NA	NA	NA
 ASV1081	Fungi	Ascomycota	Orbiliomycetes	Orbiliales	Orbiliaceae	Orbilia	NA
 ASV1082	Fungi	Basidiomycota	Agaricomycetes	Sebacinales	Sebacinaceae	NA	NA
 ASV1083	Fungi	Ascomycota	NA	NA	NA	NA	NA
-ASV1084	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	NA
+ASV1084	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	Acremonium sp.
 ASV1085	NA	NA	NA	NA	NA	NA	NA
 ASV1086	NA	NA	NA	NA	NA	NA	NA
 ASV1087	Fungi	Ascomycota	Dothideomycetes	NA	NA	NA	NA
@@ -1583,7 +1583,7 @@ ASV1581	Fungi	Ascomycota	Dothideomycetes	NA	NA	NA	NA
 ASV1582	Fungi	Ascomycota	Eurotiomycetes	Chaetothyriales	Herpotrichiellaceae	Cladophialophora	NA
 ASV1583	Fungi	Basidiomycota	Agaricomycetes	Agaricales	Inocybaceae	Inocybe	NA
 ASV1584	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Aspergillaceae	Penicillium	NA
-ASV1585	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	NA
+ASV1585	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	Fusarium sp.
 ASV1586	Fungi	NA	NA	NA	NA	NA	NA
 ASV1587	Fungi	Mucoromycota	Umbelopsidomycetes	NA	NA	NA	NA
 ASV1588	Fungi	Ascomycota	NA	NA	NA	NA	NA
@@ -1716,7 +1716,7 @@ ASV1714	Fungi	Ascomycota	Eurotiomycetes	Chaetothyriales	NA	NA	NA
 ASV1715	Fungi	Ascomycota	Eurotiomycetes	NA	NA	NA	NA
 ASV1716	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Trichocomaceae	Talaromyces	Talaromyces austrocalifornicus
 ASV1717	Fungi	Ascomycota	Sordariomycetes	Xylariales	NA	Neoidriella	Neoidriella desertorum
-ASV1718	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	NA
+ASV1718	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	Fusarium sp.
 ASV1719	NA	NA	NA	NA	NA	NA	NA
 ASV1720	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Bionectriaceae	Gliomastix	NA
 ASV1721	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Aspergillaceae	Penicillium	NA
@@ -1936,7 +1936,7 @@ ASV1934	Fungi	Basidiomycota	Agaricomycetes	NA	NA	NA	NA
 ASV1935	Fungi	Ascomycota	Pezizomycetes	Pezizales	NA	NA	NA
 ASV1936	Fungi	Ascomycota	Archaeorhizomycetes	NA	NA	NA	NA
 ASV1937	Fungi	Ascomycota	Sordariomycetes	Microascales	Microascaceae	NA	NA
-ASV1938	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	NA
+ASV1938	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	Acremonium sp.
 ASV1939	Fungi	NA	NA	NA	NA	NA	NA
 ASV1940	Fungi	Ascomycota	Dothideomycetes	Pleosporales	Thyridariaceae	Roussoella	Roussoella solani
 ASV1941	NA	NA	NA	NA	NA	NA	NA
@@ -2155,7 +2155,7 @@ ASV2153	Fungi	Basidiomycota	Agaricomycetes	Trechisporales	Hydnodontaceae	Trechis
 ASV2154	Fungi	Ascomycota	Dothideomycetes	Pleosporales	Didymosphaeriaceae	Paraphaeosphaeria	NA
 ASV2155	NA	NA	NA	NA	NA	NA	NA
 ASV2156	Fungi	Glomeromycota	NA	NA	NA	NA	NA
-ASV2157	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	NA
+ASV2157	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	Acremonium sp.
 ASV2158	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Aspergillaceae	NA	NA
 ASV2159	Fungi	Ascomycota	Sordariomycetes	Sordariales	NA	NA	NA
 ASV2160	Fungi	Ascomycota	Dothideomycetes	NA	NA	NA	NA
@@ -2662,7 +2662,7 @@ ASV2661	Fungi	Basidiomycota	Agaricomycetes	NA	NA	NA	NA
 ASV2662	Fungi	Basidiomycota	Agaricomycetes	Boletales	Pisolithaceae	Pisolithus	NA
 ASV2663	Fungi	NA	NA	NA	NA	NA	NA
 ASV2664	NA	NA	NA	NA	NA	NA	NA
-ASV2665	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	NA
+ASV2665	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	Acremonium sp.
 ASV2666	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Trichocomaceae	Talaromyces	NA
 ASV2667	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	NA	NA
 ASV2668	Fungi	Ascomycota	Sordariomycetes	NA	NA	NA	NA
@@ -4476,7 +4476,7 @@ ASV4476	NA	NA	NA	NA	NA	NA	NA
 ASV4477	Fungi	NA	NA	NA	NA	NA	NA
 ASV4478	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Trichocomaceae	Talaromyces	NA
 ASV4479	Fungi	NA	NA	NA	NA	NA	NA
-ASV4480	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	NA
+ASV4480	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	Acremonium sp.
 ASV4481	Fungi	Ascomycota	Orbiliomycetes	NA	NA	NA	NA
 ASV4482	Fungi	Basidiomycota	Agaricomycetes	Agaricales	Inocybaceae	Inocybe	NA
 ASV4483	Fungi	NA	NA	NA	NA	NA	NA
@@ -4492,7 +4492,7 @@ ASV4493	Fungi	NA	NA	NA	NA	NA	NA
 ASV4494	Fungi	NA	NA	NA	NA	NA	NA
 ASV4495	Fungi	NA	NA	NA	NA	NA	NA
 ASV4496	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Aspergillaceae	Penicillium	Penicillium coffeae
-ASV4497	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	NA
+ASV4497	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	Fusarium sp.
 ASV4498	Fungi	Ascomycota	Eurotiomycetes	NA	NA	NA	NA
 ASV4499	Fungi	Ascomycota	Sordariomycetes	Xylariales	NA	NA	NA
 ASV4500	Fungi	Ascomycota	Eurotiomycetes	Chaetothyriales	Herpotrichiellaceae	Fonsecaea	Fonsecaea brasiliensis
@@ -5081,7 +5081,7 @@ ASV5084	Fungi	Ascomycota	Dothideomycetes	Capnodiales	Teratosphaeriaceae	Xenopeni
 ASV5085	Fungi	Basidiomycota	Agaricomycetes	Agaricales	Physalacriaceae	Oudemansiella	Oudemansiella canarii
 ASV5086	Fungi	NA	NA	NA	NA	NA	NA
 ASV5087	Fungi	Ascomycota	Eurotiomycetes	Eurotiales	Aspergillaceae	Penicillium	NA
-ASV5088	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	NA
+ASV5088	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	Acremonium sp.
 ASV5089	NA	NA	NA	NA	NA	NA	NA
 ASV5090	Fungi	Ascomycota	Dothideomycetes	Pleosporales	Phaeosphaeriaceae	Ophiosphaerella	Ophiosphaerella agrostidis
 ASV5091	Fungi	Ascomycota	Eurotiomycetes	NA	NA	NA	NA
@@ -7164,7 +7164,7 @@ ASV7178	Fungi	Ascomycota	Orbiliomycetes	NA	NA	NA	NA
 ASV7179	Fungi	Basidiomycota	Agaricomycetes	Agaricales	Lyophyllaceae	NA	NA
 ASV7180	Fungi	NA	NA	NA	NA	NA	NA
 ASV7181	Fungi	Rozellomycota	NA	NA	NA	NA	NA
-ASV7182	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	NA
+ASV7182	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	Acremonium sp.
 ASV7183	Fungi	Monoblepharomycota	Monoblepharidomycetes	Monoblepharidales	NA	NA	NA
 ASV7184	NA	NA	NA	NA	NA	NA	NA
 ASV7185	NA	NA	NA	NA	NA	NA	NA
@@ -8082,7 +8082,7 @@ ASV8103	NA	NA	NA	NA	NA	NA	NA
 ASV8104	NA	NA	NA	NA	NA	NA	NA
 ASV8105	Fungi	Basidiomycota	Agaricomycetes	Cantharellales	Ceratobasidiaceae	Ceratobasidium	NA
 ASV8106	Fungi	NA	NA	NA	NA	NA	NA
-ASV8107	Fungi	Ascomycota	Sordariomycetes	Microascales	Microascaceae	Scedosporium	NA
+ASV8107	Fungi	Ascomycota	Sordariomycetes	Microascales	Microascaceae	Scedosporium	Scedosporium sp.
 ASV8108	Fungi	NA	NA	NA	NA	NA	NA
 ASV8109	Fungi	NA	NA	NA	NA	NA	NA
 ASV8110	NA	NA	NA	NA	NA	NA	NA
@@ -8890,7 +8890,7 @@ ASV8914	NA	NA	NA	NA	NA	NA	NA
 ASV8915	Fungi	Basidiomycota	Tremellomycetes	NA	NA	NA	NA
 ASV8916	NA	NA	NA	NA	NA	NA	NA
 ASV8917	Fungi	Ascomycota	Sordariomycetes	NA	NA	NA	NA
-ASV8918	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	NA
+ASV8918	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	Acremonium sp.
 ASV8919	Fungi	Ascomycota	Dothideomycetes	Pleosporales	Didymosphaeriaceae	Montagnula	NA
 ASV8920	Fungi	Basidiomycota	Agaricomycetes	Agaricales	Strophariaceae	Deconica	NA
 ASV8921	Fungi	NA	NA	NA	NA	NA	NA
@@ -10780,7 +10780,7 @@ ASV10816	Fungi	Ascomycota	Sordariomycetes	Xylariales	Xylariaceae	Arthroxylaria	N
 ASV10817	Fungi	Glomeromycota	NA	NA	NA	NA	NA
 ASV10818	NA	NA	NA	NA	NA	NA	NA
 ASV10819	Fungi	Ascomycota	NA	NA	NA	NA	NA
-ASV10820	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	NA
+ASV10820	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	Acremonium sp.
 ASV10821	Fungi	NA	NA	NA	NA	NA	NA
 ASV10822	Fungi	NA	NA	NA	NA	NA	NA
 ASV10823	NA	NA	NA	NA	NA	NA	NA
@@ -10851,7 +10851,7 @@ ASV10887	Fungi	NA	NA	NA	NA	NA	NA
 ASV10888	NA	NA	NA	NA	NA	NA	NA
 ASV10889	NA	NA	NA	NA	NA	NA	NA
 ASV10890	NA	NA	NA	NA	NA	NA	NA
-ASV10891	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	NA
+ASV10891	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	Acremonium sp.
 ASV10892	NA	NA	NA	NA	NA	NA	NA
 ASV10893	NA	NA	NA	NA	NA	NA	NA
 ASV10894	Fungi	Glomeromycota	Glomeromycetes	Diversisporales	NA	Entrophospora	NA
@@ -10869,7 +10869,7 @@ ASV10905	NA	NA	NA	NA	NA	NA	NA
 ASV10906	NA	NA	NA	NA	NA	NA	NA
 ASV10907	Fungi	Basidiomycota	Agaricomycetes	Agaricales	NA	NA	NA
 ASV10908	NA	NA	NA	NA	NA	NA	NA
-ASV10909	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	NA
+ASV10909	Fungi	Ascomycota	Sordariomycetes	Hypocreales	Nectriaceae	Fusarium	Fusarium sp.
 ASV10910	NA	NA	NA	NA	NA	NA	NA
 ASV10911	Fungi	NA	NA	NA	NA	NA	NA
 ASV10912	NA	NA	NA	NA	NA	NA	NA
@@ -11300,7 +11300,7 @@ ASV11338	NA	NA	NA	NA	NA	NA	NA
 ASV11339	Fungi	Basidiomycota	Agaricomycetes	NA	NA	NA	NA
 ASV11340	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	NA	NA
 ASV11341	Fungi	NA	NA	NA	NA	NA	NA
-ASV11342	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	NA
+ASV11342	Fungi	Ascomycota	Sordariomycetes	Hypocreales	NA	Acremonium	Acremonium sp.
 ASV11343	Fungi	NA	NA	NA	NA	NA	NA
 ASV11344	Fungi	Glomeromycota	NA	NA	NA	NA	NA
 ASV11345	Fungi	Glomeromycota	Glomeromycetes	Diversisporales	NA	Entrophospora	NA

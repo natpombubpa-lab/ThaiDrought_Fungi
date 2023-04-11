@@ -15,4 +15,4 @@ This is a repository for fungal diversity investigation in Thailand repeated dro
 - [AMPtk documentation](https://amptk.readthedocs.io/en/latest/)
 
 
-Update
+Update 11 April 2023

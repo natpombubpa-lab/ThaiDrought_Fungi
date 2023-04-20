@@ -194,6 +194,12 @@ glom.fun.province
 ```
 
 ```{r}
+write.csv(otu_table(glom.fun.province), "./Data/WHO_FPPL_province_otu.csv", row.names=TRUE)
+write.csv(tax_table(glom.fun.province), "./Data/WHO_FPPL_province_tax.csv", row.names=TRUE)
+```
+
+
+```{r}
 cols.province <- distinct_palette(n = 18, add = NA)
 names(cols.province) <- unique(samdat_tbl(glom.fun.province)$.sample_name)
 

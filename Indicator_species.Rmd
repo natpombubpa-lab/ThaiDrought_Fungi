@@ -1,0 +1,199 @@
+---
+title: "Indicator species"
+output: html_document
+date: "2023-04-20"
+---
+
+```{r warning=FALSE, message=FALSE}
+library(ape)
+library(vegan)
+library(plyr)
+library(dplyr)
+library(scales)
+library(grid)
+library(reshape2)
+library(phyloseq)
+library(magrittr)
+library(ggplot2)
+library(ggpubr)
+library(data.table)
+library(tidyr)
+library(tidyverse)
+library(multcompView)
+library(VennDiagram)
+library(car)
+library(microViz)
+#library(Hmisc)
+```
+
+
+```{r}
+otus <- read.table("./Data/DroughtITS.final_fix.txt",header=T,sep="\t",row.names=1)
+otumat <- as(as.matrix(otus), "matrix")
+OTU = otu_table(otumat, taxa_are_rows = TRUE)
+```
+
+###STEP4: Import taxonomy table for analysis using Phyloseq
+This taxonomy table was created from STEP2.
+```{r}
+taxmat <- read.table("./Data/DroughtITS.taxonomy.fix.txt", header=T,sep="\t",row.names=1)
+taxmat <- as(as.matrix(taxmat),"matrix")
+TAX = tax_table(taxmat)
+```
+
+###STEP2: Import tree file for analysis using Phyloseq
+
+```{r warning=FALSE}
+treefile = "./Data/DroughtITS.tree.phy"
+tree = read.tree(treefile)
+```
+
+###STEP3: Import mapping file for analysis using Phyloseq
+
+1.Check mapping file before import to R, R will automatically change sample name that starts with number or contain “-” in sample name. If you get error in this step, you should check sample name first. 
+
+2.First column of first row should not start with #, R will not read the first row that starts with #
+
+3. You can choose which samples to include in analysis by indicating specific group in the column
+
+```{r}
+meta = read.table("./Data/DroughtITS.mapping_file.fix.txt",header=TRUE,row.names=1,sep="\t",stringsAsFactors=FALSE)
+```
+
+Check if your metadata file has been import successfully and correctly, the output will show a table of your metadata file (mapping file). *If you do not have header, you might start your first row with # (remove # and reload your mapping file).
+
+```{r}
+head(meta)
+```
+
+Construct sample_data-class using imported metadata
+```{r warning=FALSE}
+sampleData <- sample_data(meta)
+```
+
+
+###STEP4: Construct Phyloseq object
+To construct phyloseq object, otu table, taxonomy table, and sampleData are required. Phylogenetic tree can be included, but it is not necessary for constructing phyloseq object.
+Construct Phyloseq object called "Physeq"
+
+```{r warning=FALSE}
+physeq = phyloseq(OTU,TAX,sampleData)
+```
+
+###STEP8: Check phyloseq object
+This should indicate that your physeq is a "phyloseq-class experiment-level object"
+
+```{r}
+physeq
+```
+
+```{r}
+#critical group #non of the critical fungi was detected
+#physeq.1 = subset_taxa(physeq, Species == "Cryptococcus neoformans")
+#physeq.2 = subset_taxa(physeq, Species == "Candida auris")
+#physeq.3 = subset_taxa(physeq, Species == "Aspergillus fumigatus")
+#physeq.4 = subset_taxa(physeq, Species == "Candida albican")
+
+#High group #only candida tropicalis
+#physeq.5 = subset_taxa(physeq, Species == "Nakaseomyces glabrata")
+#physeq.6 = subset_taxa(physeq, Genus == "Histoplasma")
+physeq.7 = subset_taxa(physeq, Species == "Candida tropicalis")
+#physeq.8 = subset_taxa(physeq, Species == "Candida parapsilosis")
+
+#physeq.17 = subset_taxa(physeq, Genus == "Madurella")
+physeq.18 = subset_taxa(physeq, Species == "Falciformispora senegalensis")
+physeq.19 = subset_taxa(physeq, Species == "Curvularia lunata")
+#physeq.20 = subset_taxa(physeq, Species == "Zopfia rosatii")
+physeq.21 = subset_taxa(physeq, Genus == "Acremonium")
+physeq.22 = subset_taxa(physeq, Genus == "Fusarium")
+physeq.23 = subset_taxa(physeq, Genus == "Rhizopus")
+physeq.24 = subset_taxa(physeq, Genus == "Mucor")
+physeq.25 = subset_taxa(physeq, Genus == "Lichtheimia")
+
+#Medium group
+physeq.9 = subset_taxa(physeq, Genus == "Scedosporium")
+#physeq.10 = subset_taxa(physeq, Species == "Lomentospora prolificans")
+#physeq.11 = subset_taxa(physeq, Genus == "Coccidioides")
+#physeq.12 = subset_taxa(physeq, Species == "Pichia kudriavzeveii")
+#physeq.13 = subset_taxa(physeq, Species == "Cryptococcus gattii")
+physeq.14 = subset_taxa(physeq, Species == "Talaromyces marneffei")
+#physeq.15 = subset_taxa(physeq, Species == "Pneumocystis jirovecii")
+#physeq.16 = subset_taxa(physeq, Genus == "Paracoccidioides")
+
+
+# High group: Candida tropicalis and Medium group: Falciformispora senegalensis, Curvularia lunata, Acremonium spp, Fusarium spp, Rhizopus spp, Mucor spp, Lichtheimia, Scedosporium, Talaromyces marneffei
+
+physeq.merge = merge_phyloseq(physeq.7, physeq.9, physeq.14, physeq.18, physeq.19, physeq.21, physeq.22, physeq.23, physeq.24, physeq.25)
+
+physeq.merge
+```
+Convert phyloseq OTU table to reflect species
+
+Glomerate at Species level (However, not all of species will be unique)
+See for ref: https://github.com/joey711/phyloseq/issues/927
+
+```{r}
+glom.fun <- speedyseq::tax_glom(physeq.merge,taxrank = "Species")
+glom.fun
+```
+
+```{r}
+glomTax = tax_table(glom.fun)[,"Species"]
+```
+
+Combine OTU table and Tax table
+```{r}
+glomOTU = otu_table(glom.fun)
+glomTable = merge(glomOTU,glomTax,by=0,all=TRUE)
+head(glomTable)
+```
+
+Use Speceis as rowname and remove prior rowname and species column
+```{r}
+rownames(glomTable) = glomTable[,"Species"]
+glomTable$Row.names = NULL
+glomTable$Species = NULL
+```
+
+
+Transpose Rows and columns for desired labdsv format
+```{r}
+ASV = t(glomTable)
+```
+
+Remove columns with 0 species counts
+
+```{r}
+ASV.no0 = ASV[, colSums(ASV != 0) > 0]
+```
+
+Subset sampleData phyloseq object for the desired variable (e.g. treatment, etc.)
+```{r}
+ASV_provinces = subset(sampleData,select = "province")
+```
+
+Make the varible numeric
+```{r}
+ASV_provinces$province
+```
+
+```{r}
+ASV_provinces$province = as.numeric(as.factor(ASV_provinces$province))
+ASV_provinces$province
+```
+
+```{r}
+class(ASV_province$province)
+```
+
+Run indval code from lab.dsv 
+```{r}
+ThaiDrought.indic.province = indval(ASV.no0,ASV_province$province)
+```
+
+```{r}
+summary(ThaiDrought.indic.province, p = 0.05, type = "short")
+```
+
+
+

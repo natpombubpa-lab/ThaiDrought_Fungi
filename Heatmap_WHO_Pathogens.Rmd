@@ -209,113 +209,162 @@ glom.fun.province %>%
 
 
 ```{r}
-plot_heatmap(glom.fun.province,"NMDS", "bray", sample.label = "province", sample.order = c("Bueng Kan", "Chaiyaphum", "Kalasin", "Khon Kaen", "Loei", "Maha Sarakham", "Mukdahan", "Nakhon Phanom", "Nakhon Ratchasima", "Nong Bua Lam Phu", "Nong Khai", "Roi Et", "Sakon Nakhon", "Si Sa Ket", "Surin", "Ubon Ratchathani", "Udon Thani", "Yasothon"), taxa.label = "Species", low="#FFFFCC", high="#FF3300", na.value="white", taxa.order = taxaOrder)
+plot_heatmap(glom.fun.province,"NMDS", "bray", sample.label = "province", sample.order = c("Bueng Kan", "Chaiyaphum", "Kalasin", "Khon Kaen", "Loei", "Maha Sarakham", "Mukdahan", "Nakhon Phanom", "Nakhon Ratchasima", "Nong Bua Lam Phu", "Nong Khai", "Roi Et", "Sakon Nakhon", "Si Sa Ket", "Surin", "Ubon Ratchathani", "Udon Thani", "Yasothon"), taxa.label = "Species", low="#FFFFCC", high="#FF3300", na.value="white")
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##Transform OTU table to show relative abundance
-##Samples can also be merged together by a variable in the mapping file
-
+###ANOVA - province
 ```{r}
+alpha.diversity = estimate_richness(physeq.merge, measures = c("Observed"))
+data.anova = cbind(sample_data(physeq.merge), alpha.diversity)
+physeq.merge.anova = aov(Observed ~ province, data.anova)
 
-fun.abund <- merge_samples(glom.fun, "zone")
-sample_data(fun.abund)$zone <- factor(sample_names(fun.abund))
-fun.abund = transform_sample_counts(fun.abund, function(x) x / sum(x))
-fun.abund
-
-```
-
-
-##Merge taxonomic data with OTU table and mapping file (Can alter code to change taxonomic rank to Order, Class, Family, etc.) and change Phylum column from a factor to a character.
-
-```{r}
-data_glom.fun <- speedyseq::psmelt(fun.abund)
-data_glom.fun$Species <- as.character(data_glom.fun$Species)
-```
-
-##If a phylum has less than 1% abundance, phylum name is changed to <1% abund.
-
-```{r}
-#data_glom.fun$Species[data_glom.fun$Abundance < 0.01] <- "<1% abund."
-```
-
-Count the levels present in the Phylum column
-
-```{r}
-Count = length(unique(data_glom.fun$Species))
-Count
-```
-
-Print out unique phyla names for insertion into barplots in next step.
-
-```{r}
-unique((data_glom.fun$Species))
-```
-
-Create levels of phyla represented in barplot. 
-
-
-```{r}
-data_glom.fun$zone <- factor(data_glom.fun$zone, levels = c('one', 'two', 'three', 'four', 'five', 'six', 'seven' ,'eight')) 
+summary(physeq.merge.anova)
+Anova(physeq.merge.anova, type = "III")
+#physeq.prune.rarefy.anova.CrusttypeLayerInteraction = aov(Observed ~ Layer/Crust_type_no_depth, data.anova)
+#summary(physeq.prune.rarefy.anova.CrusttypeLayerInteraction)
 ```
 
 ```{r}
-data_glom.fun$drought <- factor(data_glom.fun$drought, levels = c('One', 'Two', 'Three', 'Four')) 
+tukey.ps = TukeyHSD(x=physeq.merge.anova)
+summary(tukey.ps)
 ```
 
 
 ```{r}
-data_glom.fun$plant <- factor(data_glom.fun$plant, levels = c('Cassava', 'Rice', 'Rubber tree', 'Sugarcane')) 
-```
-
-```{r fig.height=7, fig.width=12, fig.align="center"}
-# The palette with black:
-cbbPalette <- c("#009E73","#999999", "#E69F00", "#56B4E9", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "midnightblue", "lightgreen","thistle3", "brown", "aquamarine4","lavenderblush2","snow3", "darkblue", "darkgoldenrod1", "darkseagreen", "darkorchid", "darkolivegreen1", "black","lightskyblue", "darkgreen", "deeppink", "khaki2", "firebrick", "brown1", "darkorange1", "cyan1", "royalblue4", "darksalmon", "darkblue","royalblue4", "dodgerblue3", "steelblue1", "lightskyblue", "darkseagreen", "darkgoldenrod1", "darkseagreen", "darkorchid", "darkolivegreen1", "brown1", "darkorange1", "cyan1", "darkgrey")
-taxcom_layer_pl = ggplot(data = data_glom.fun, mapping = aes_string(x = "zone", y = "Abundance", fill = "Species" )) + 
-  geom_bar(stat="identity", position="fill") + 
-  ggtitle("WHO Fungal Priority Pathogens Composition in Northeastern Thailand in Agricultural Soil")+
-  theme_pubr(border= TRUE) + 
-  theme(plot.title = element_text(hjust = 0.5)) + scale_fill_manual(values = cbbPalette) +  
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-print(taxcom_layer_pl + theme(legend.position="right") + guides(fill=guide_legend(nrow=32)))
-
+generate_label_df <- function(tukey.ps, variable){
+ 
+     # Extract labels and factor levels from Tukey post-hoc 
+     Tukey.levels <- tukey.ps[[variable]][,4]
+     Tukey.labels <- data.frame(multcompLetters(Tukey.levels)['Letters'])
+     
+     #I need to put the labels in the same order as in the boxplot :
+     Tukey.labels$treatment=rownames(Tukey.labels)
+     Tukey.labels=Tukey.labels[order(Tukey.labels$treatment) , ]
+     return(Tukey.labels)
+     }
 ```
 
 ```{r}
-png("./Figures/Pathogen_compoisiton_by_zone.png", units="in", width = 12, height = 10, res = 600 )
-taxcom_layer_pl + theme(legend.position="right") + guides(fill=guide_legend(nrow=32)) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+LABELS=generate_label_df(tukey.ps, 'province')
+```
+
+```{r}
+names(LABELS) = c('Letters','province')
+```
+
+```{r}
+LABELS
+```
+
+
+```{r}
+ylabel <- data.frame("ylabel" = c(22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22)) 
+```
+
+```{r}
+LABELS$ylabel<-ylabel$ylabel
+```
+
+#Alpha diversity by month for each crust type
+
+```{r}
+physeq.plot.richness.province = plot_richness(physeq.merge, x="province", color=("province"), measures=c("Observed")) + 
+  geom_boxplot(lwd=0.5) + ggtitle("WHO FPPL Alpha Diversity by Province") + 
+  stat_compare_means(method = "anova", label.y = 25) + 
+  theme_pubr(border= TRUE, legend = c("none")) + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_colour_hue(l = 58) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  geom_text(data=LABELS, aes(x=LABELS$province, y = LABELS$ylabel , label = LABELS$Letters))
+
+physeq.plot.richness.province
+```
+
+```{r warning=FALSE}
+pdf("./Figures/Alpha_div_by_province_8x5.pdf", width = 8, height = 5 )
+physeq.plot.richness.province
 dev.off()
 ```
+
+
+###ANOVA - plant
+```{r}
+alpha.diversity = estimate_richness(physeq.merge, measures = c("Observed"))
+data.anova = cbind(sample_data(physeq.merge), alpha.diversity)
+physeq.merge.anova = aov(Observed ~ plant, data.anova)
+
+summary(physeq.merge.anova)
+Anova(physeq.merge.anova, type = "III")
+#physeq.prune.rarefy.anova.CrusttypeLayerInteraction = aov(Observed ~ Layer/Crust_type_no_depth, data.anova)
+#summary(physeq.prune.rarefy.anova.CrusttypeLayerInteraction)
+```
+
+```{r}
+tukey.ps = TukeyHSD(x=physeq.merge.anova)
+summary(tukey.ps)
+```
+
+
+```{r}
+generate_label_df <- function(tukey.ps, variable){
+ 
+     # Extract labels and factor levels from Tukey post-hoc 
+     Tukey.levels <- tukey.ps[[variable]][,4]
+     Tukey.labels <- data.frame(multcompLetters(Tukey.levels)['Letters'])
+     
+     #I need to put the labels in the same order as in the boxplot :
+     Tukey.labels$treatment=rownames(Tukey.labels)
+     Tukey.labels=Tukey.labels[order(Tukey.labels$treatment) , ]
+     return(Tukey.labels)
+     }
+```
+
+```{r}
+LABELS=generate_label_df(tukey.ps, 'plant')
+```
+
+```{r}
+names(LABELS) = c('Letters','plant')
+```
+
+```{r}
+LABELS
+```
+
+
+```{r}
+ylabel <- data.frame("ylabel" = c(22,22,22,22)) 
+```
+
+```{r}
+LABELS$ylabel<-ylabel$ylabel
+```
+
+#Alpha diversity 
+
+```{r}
+physeq.plot.richness.plant = plot_richness(physeq.merge, x="plant", color=("plant"), measures=c("Observed")) + 
+  geom_boxplot(lwd=0.5) + ggtitle("WHO FPPL Alpha Diversity by Plant") + 
+  stat_compare_means(method = "anova", label.y = 25) + 
+  theme_pubr(border= TRUE, legend = c("none")) + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_colour_hue(l = 58) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  geom_text(data=LABELS, aes(x=LABELS$plant, y = LABELS$ylabel , label = LABELS$Letters))
+
+physeq.plot.richness.plant
+```
+
+```{r warning=FALSE}
+pdf("./Figures/Alpha_div_by_plant_8x5.pdf", width = 5, height = 5 )
+physeq.plot.richness.plant
+dev.off()
+```
+
+
+
+
+
 
 
 

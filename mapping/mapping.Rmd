@@ -1,0 +1,84 @@
+---
+title: "Mapping"
+output:
+  html_document: default
+  word_document: default
+date: "2023-03-23"
+---
+
+```{r}
+library(sf)
+library(rgdal)  
+library(raster) 
+library(ggplot2)
+```
+  
+```{r}
+map <- st_read(
+  "C:/Users/User/Desktop/mapping/mamp.shp", stringsAsFactors = T)
+```
+  
+1. Map+Sample point
+```{r}
+plot <- ggplot() + 
+  geom_sf(fill = "#FFFFFF", data = map, linewidth = 1) + 
+  coord_sf() +
+  theme_minimal() +
+  labs(x = "Longtitude (°E)", y = "Latitude (°N)") 
+```
+
+```{r}
+print(plot)
+```
+
+```{r}
+library(readr)
+risk <- read_csv("new_sam.csv")
+```
+  
+```{r}
+map4 <- plot + geom_point(aes(long, lat, colour = as.factor(zone)), data = risk, size = 3) +
+  geom_sf_text(data = map,aes(label = ADM1_EN),check_overlap = TRUE ,inherit.aes = TRUE, fun.geometry = sf::st_centroid)
+```
+
+
+```{r}
+map4
+```
+
+2. Map+Drought
+
+```{r}
+ggplot() +
+  geom_sf(aes(fill = as.factor(risk)), data = map, linewidth = 1) +
+  scale_fill_brewer(palette = "OrRd") +
+  coord_sf() +
+  theme_minimal() +
+  labs(x = "Longtitude (°E)", y = "Latitude (°N)") +
+  geom_sf_text(data = map,aes(label = ADM1_EN),check_overlap = TRUE ,inherit.aes = TRUE, fun.geometry = sf::st_centroid)
+  
+```
+
+3. Map+Drought dot
+
+```{r}
+map3 <- ggplot() + 
+  geom_sf(fill = "#FFFFFF", data = map, linewidth = 1) + 
+  coord_sf() +
+  theme_minimal() +
+  labs(x = "Longtitude (°E)", y = "Latitude (°N)") +
+  geom_point(aes(long, lat, colour = as.factor(prov)), data = risk, size = 3) +
+  scale_color_brewer(palette = "OrRd")
+```
+
+
+```{r}
+map3
+```
+
+```{r}
+png("./Figures/map4.png", units="in", width = 15, height = 10, res = 600 )
+map4 + theme(legend.position="right")
+dev.off()
+```
+

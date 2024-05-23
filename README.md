@@ -11,7 +11,7 @@ This is a repository for fungal diversity investigation in Thailand repeated dro
    - Heatmap
    - Indicator Species
    - Mapping files
-4. [Mapping files](mapping)
+4. [Mapping data](mapping)
 
 
 ## Note

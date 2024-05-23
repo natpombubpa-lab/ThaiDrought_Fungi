@@ -4,7 +4,14 @@ This is a repository for fungal diversity investigation in Thailand repeated dro
 # Data and Analysis
 1. [Data](Data) (AMPtk v.1.5.5 results)
 2. [R Markdown](Rmd)
-3. [Mapping files](mapping)
+   - Alpha Diversity
+   - Beta Diversity
+   - Taxonomic Composition
+   - FUNGuilds
+   - Heatmap
+   - Indicator Species
+   - Mapping files
+4. [Mapping files](mapping)
 
 
 ## Note

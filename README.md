@@ -7,7 +7,7 @@ This is a repository for fungal diversity investigation in Agriculture areas Acr
    - Alpha Diversity
    - Beta Diversity
    - Taxonomic Composition
-   - FUNGuilds
+   - FUNGuild
    - Heatmap
    - Indicator Species
    - Mapping files

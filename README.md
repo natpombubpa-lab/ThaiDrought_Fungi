@@ -1,5 +1,6 @@
-# Fungal Diversity: Thailand Repeated Drought Area
-This is a repository for fungal diversity investigation in Thailand repeated drought area.
+# Fungal Diversity: Agriculture areas Across Northeast Thailand
+## WHO Fungal Priority Pathogens
+This is a repository for fungal diversity investigation in Agriculture areas Across Northeast Thailand.
 
 # Data and Analysis
 1. [Data](Data) (AMPtk v.1.5.5 results)

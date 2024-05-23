@@ -1,0 +1,236 @@
+---
+title: "Beta diversityT"
+author: "Teeratat Kaewjon"
+date: "Updated July 7, 2023"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+```{r}
+getwd()
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Mojave Endemic Bacteria
+This is documentation and codes for Fungal diversity analysis in JTNP temporal biocrust dataset.
+
+###STEP1: Load all necessary packages for analysis
+More information about Phyloseq can be found at the following link: [Phyloseq](https://joey711.github.io/phyloseq/)
+If you get error in this step, you probably need to install any packages which causes error.
+
+
+#ขั้นตอนที่ 1 ดาวน์โหลดแพ็คแกจที่จำเป็น
+```{r warning=FALSE, message=FALSE}
+library(ape)
+library(vegan)
+library(plyr)
+library(dplyr)
+library(scales)
+library(grid)
+library(reshape2)
+library(phyloseq)
+library(magrittr)
+library(ggplot2)
+library(ggpubr)
+library(data.table)
+library(tidyr)
+library(tidyverse)
+library(ggforce)
+library(microViz)
+```
+
+#ขั้นตอนที่ 2 นำเข้าข้อมูล OTU table, taxonomy table, tree file, mapping file
+
+```{r}
+otus <- read.table("DroughtITS.final_fix.txt",header=T,sep="\t",row.names=1)
+otumat <- as(as.matrix(otus), "matrix")
+OTU = otu_table(otumat, taxa_are_rows = TRUE)
+```
+
+###STEP4: Import taxonomy table for analysis using Phyloseq
+This taxonomy table was created from STEP2.
+```{r}
+taxmat <- read.table("DroughtITS.taxonomy.fix.txt", header=T,sep="\t",row.names=1)
+taxmat <- as(as.matrix(taxmat),"matrix")
+TAX = tax_table(taxmat)
+```
+
+###STEP2: Import tree file for analysis using Phyloseq
+
+```{r warning=FALSE}
+treefile = "DroughtITS.tree.phy"
+tree = read.tree(treefile)
+```
+
+###STEP3: Import mapping file for analysis using Phyloseq
+
+1.Check mapping file before import to R, R will automatically change sample name that starts with number or contain “-” in sample name. If you get error in this step, you should check sample name first. 
+
+2.First column of first row should not start with #, R will not read the first row that starts with #
+
+3. You can choose which samples to include in analysis by indicating specific group in the column
+
+```{r}
+meta = read.table("./DroughtITS.mapping_file.fix.final.txt",header=TRUE,row.names=1,sep="\t",stringsAsFactors=FALSE)
+```
+
+Check if your metadata file has been import successfully and correctly, the output will show a table of your metadata file (mapping file). *If you do not have header, you might start your first row with # (remove # and reload your mapping file).
+
+```{r}
+head(meta)
+```
+
+Construct sample_data-class using imported metadata
+```{r warning=FALSE}
+sampleData <- sample_data(meta)
+```
+
+
+```{r warning=FALSE}
+physeq = phyloseq(OTU,TAX,sampleData)
+physeq
+```
+
+
+# ใช้คำสั่ง subset_taxa() เพื่อเลือกข้อมูลเฉพาะกลุ่งฟังไจมาวิเคราะห์
+
+```{r}
+physeq <- subset_taxa(physeq, Kingdom == "Fungi")
+physeq
+```
+
+```{r}
+
+#physeq <- subset_samples(physeq, plant == "Rice")
+#physeq <- subset_samples(physeq, plant == "Cassava")
+#physeq <- subset_samples(physeq, plant == "Rubber tree")
+physeq <- subset_samples(physeq, plant == "Sugarcane")
+
+physeq
+
+```
+
+```{r}
+#physeq <- subset_samples(physeq, zone == "Phu_Wiang")
+#physeq <- subset_samples(physeq, zone == "Udon_Sakon_Nakon")
+physeq <- subset_samples(physeq, zone == "Bueng_Kan")
+#physeq = merge_phyloseq(physeq.two, physeq.five,physeq.six)
+physeq
+```
+
+```{r}
+#critical group #non of the critical fungi was detected
+#physeq.1 = subset_taxa(physeq, Species == "Cryptococcus neoformans")
+#physeq.2 = subset_taxa(physeq, Species == "Candida auris")
+#physeq.3 = subset_taxa(physeq, Species == "Aspergillus fumigatus")
+#physeq.4 = subset_taxa(physeq, Species == "Candida albican")
+
+#High group #only candida tropicalis
+#physeq.5 = subset_taxa(physeq, Species == "Nakaseomyces glabrata")
+#physeq.6 = subset_taxa(physeq, Genus == "Histoplasma")
+physeq.7 = subset_taxa(physeq, Species == "Candida tropicalis")
+#physeq.8 = subset_taxa(physeq, Species == "Candida parapsilosis")
+
+#physeq.17 = subset_taxa(physeq, Genus == "Madurella")
+physeq.18 = subset_taxa(physeq, Species == "Falciformispora senegalensis")
+physeq.19 = subset_taxa(physeq, Species == "Curvularia lunata")
+#physeq.20 = subset_taxa(physeq, Species == "Zopfia rosatii")
+physeq.21 = subset_taxa(physeq, Genus == "Acremonium")
+physeq.22 = subset_taxa(physeq, Genus == "Fusarium")
+physeq.23 = subset_taxa(physeq, Genus == "Rhizopus")
+physeq.24 = subset_taxa(physeq, Genus == "Mucor")
+physeq.25 = subset_taxa(physeq, Genus == "Lichtheimia")
+
+#Medium group
+physeq.9 = subset_taxa(physeq, Genus == "Scedosporium")
+#physeq.10 = subset_taxa(physeq, Species == "Lomentospora prolificans")
+#physeq.11 = subset_taxa(physeq, Genus == "Coccidioides")
+#physeq.12 = subset_taxa(physeq, Species == "Pichia kudriavzeveii")
+#physeq.13 = subset_taxa(physeq, Species == "Cryptococcus gattii")
+physeq.14 = subset_taxa(physeq, Species == "Talaromyces marneffei")
+#physeq.15 = subset_taxa(physeq, Species == "Pneumocystis jirovecii")
+#physeq.16 = subset_taxa(physeq, Genus == "Paracoccidioides")
+
+
+# High group: Candida tropicalis and Medium group: Falciformispora senegalensis, Curvularia lunata, Acremonium spp, Fusarium spp, Rhizopus spp, Mucor spp, Lichtheimia, Scedosporium, Talaromyces marneffei
+
+physeq.merge = merge_phyloseq(physeq.7, physeq.9, physeq.14, physeq.18, physeq.19, physeq.21, physeq.22, physeq.23, physeq.24, physeq.25)
+
+physeq.merge
+```
+
+
+###วิเคราะห์ฟังไจทั้งหมด
+CLR transform
+```{r}
+physeq_clr = microbiome::transform(physeq.merge,"clr")
+physeq_clr
+```
+
+Non CLR
+```{r}
+phyloseq::otu_table(physeq.prune.rarefy)[1:5, 1:5]
+```
+CLR 
+```{r}
+phyloseq::otu_table(physeq_clr)[1:5, 1:5]
+```
+
+```{r}
+physeq_ord <- ordinate(physeq.merge,method = "PCoA",distance =  "bray")
+```
+
+```{r}
+#sample_data(physeq.prune.LAC)$Crusttype = factor(sample_data(physeq.prune.LAC)$Crusttype, levels = "LAC")
+```
+
+```{r}
+#sample_data(physeq.prune.LAC)$Crusttype = factor(sample_data(physeq.prune.LAC)$Crusttype, levels = c("LAC", "CLC"))
+```
+
+```{r}
+
+sample_data(physeq.merge)$zone = factor(sample_data(physeq.merge)$zone, levels = c('Loei_Petchabun', 'Phu_Wiang', 'Khorat_Plateau', 'Phu_Phan', 'Udon_Sakon_Nakon', 'Bueng_Kan', 'Khorat_Ubon' ,'Buriram'))  
+
+```
+
+```{r}
+sample_data(physeq.merge)$plant = factor(sample_data(physeq.merge)$plant, levels = c('Rice', 'Cassava', 'Rubber tree', 'Sugarcane'))
+```
+
+```{r}
+ps.dist.all = phyloseq::distance(physeq.merge, "bray")
+```
+
+#ps.dist ~Incubation is formula 'Y ~ A + B*C'
+```{r}
+adonis(ps.dist.all ~plant, as(sample_data(physeq.merge),"data.frame"))
+```
+
+```{r}
+col_pal <- c("Leoi_Petchabun" = "#1B9E77",'Phu_Wiang' = "#D95F02", 'Khorat_Plateau' = "#7570B3", 'Phu_Phan' = "#E7298A", 'Udon_Sakon_Nakon' = "#66A61E", 'Bueng_Kan' = "#E6AB02", 'Khorat_Ubon' = "#A6761D", 'Buriram' = "#666666")
+```
+
+
+```{r}
+pslayer.zone = plot_ordination(physeq.merge, physeq_ord, type = "samples", color = "plant") + ggtitle("WHO FPPL Beta Diversity (PCoA) in zone 6 (Bueng_Kan)") + 
+  annotate("text", x = -0.2, y = 1.3,cex = 5.5, label = "PERMANOVA, p = 0.001") + 
+  geom_point(size=3) + scale_colour_manual(values = c("#000000","skyblue1","#009E73", "#E69F00", "orangered")) + 
+  theme_pubr(legend = "right", border = TRUE) + 
+  theme(plot.title = element_text(hjust = 0.5)) + stat_ellipse()
+
+pslayer.zone
+```
+
+```{r}
+png("./Figures/Beta_Diversity(PCoA)_zone6_fix_ellipse.png",units = "in", width = 7.5, height = 6, res = 1000 )
+pslayer.zone + 
+  geom_point(size=3)  + 
+  theme_pubr(legend = "right", border = TRUE) + 
+  theme(plot.title = element_text(hjust = 0.5))
+dev.off()
+```

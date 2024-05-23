@@ -1,0 +1,221 @@
+---
+title: "Venn"
+output: html_document
+date: "2024-01-14"
+---
+
+```{r warning=FALSE, message=FALSE}
+library(ape)
+library(vegan)
+library(plyr)
+library(dplyr)
+library(scales)
+library(grid)
+library(reshape2)
+library(phyloseq)
+library(magrittr)
+library(ggplot2)
+library(ggpubr)
+library(data.table)
+library(tidyr)
+library(tidyverse)
+library(multcompView)
+library(VennDiagram)
+library(car)
+#library(Hmisc)
+```
+
+
+```{r}
+otus <- read.table("DroughtITS.final_fix.txt",header=T,sep="\t",row.names=1)
+otumat <- as(as.matrix(otus), "matrix")
+OTU = otu_table(otumat, taxa_are_rows = TRUE)
+```
+
+###STEP4: Import taxonomy table for analysis using Phyloseq
+This taxonomy table was created from STEP2.
+```{r}
+taxmat <- read.table("DroughtITS.taxonomy.fix.txt", header=T,sep="\t",row.names=1)
+taxmat <- as(as.matrix(taxmat),"matrix")
+TAX = tax_table(taxmat)
+```
+
+###STEP2: Import tree file for analysis using Phyloseq
+
+```{r warning=FALSE}
+treefile = "DroughtITS.tree.phy"
+tree = read.tree(treefile)
+```
+
+###STEP3: Import mapping file for analysis using Phyloseq
+
+1.Check mapping file before import to R, R will automatically change sample name that starts with number or contain “-” in sample name. If you get error in this step, you should check sample name first. 
+
+2.First column of first row should not start with #, R will not read the first row that starts with #
+
+3. You can choose which samples to include in analysis by indicating specific group in the column
+
+```{r}
+meta = read.table("DroughtITS.mapping_file.fix.final.txt",header=TRUE,row.names=1,sep="\t",stringsAsFactors=FALSE)
+```
+
+Check if your metadata file has been import successfully and correctly, the output will show a table of your metadata file (mapping file). *If you do not have header, you might start your first row with # (remove # and reload your mapping file).
+
+```{r}
+head(meta)
+```
+
+Construct sample_data-class using imported metadata
+```{r warning=FALSE}
+sampleData <- sample_data(meta)
+```
+
+
+###STEP4: Construct Phyloseq object
+To construct phyloseq object, otu table, taxonomy table, and sampleData are required. Phylogenetic tree can be included, but it is not necessary for constructing phyloseq object.
+Construct Phyloseq object called "Physeq"
+
+```{r warning=FALSE}
+physeq = phyloseq(OTU,TAX,sampleData)
+physeq
+```
+
+```{r}
+physeq = subset_taxa(physeq, Kingdom == "Fungi")
+#physeq = subset_samples(physeq)
+
+```
+
+```{r}
+sampleData <- sample_data(meta)
+```
+
+
+```{r}
+physeq <- phyloseq(OTU,TAX,sampleData)
+physeq
+physeq <- subset_taxa(physeq, Kingdom == "Fungi")
+physeq
+```
+
+
+```{r}
+physeq.prune = prune_taxa(taxa_sums(physeq) > 1, physeq)
+physeq.prune
+```
+```{r}
+phyloseq::tax_table(physeq.prune)
+```
+
+```{r}
+physeq.zone = subset_samples(physeq.prune)
+```
+
+##Make taxonomy table into a matrix and relabel NA as unknown
+```{r}
+tax.fun <- as(tax_table(physeq.zone),"matrix")
+head(tax.fun)
+tax.fun[is.na(tax.fun)] <- "Unknown"
+head(tax.fun)
+```
+
+###Convert tax table back to phyloseq object and generate phyloseq object with new tax table
+```{r}
+TAX.fun <- tax_table(tax.fun)
+fun.3 <- phyloseq(sample_data(physeq.zone),otu_table(physeq.zone),TAX.fun)
+fun.3
+```
+
+
+```{r}
+glom.fun <- speedyseq::tax_glom(fun.3,taxrank = "Genus")
+glom.fun
+```
+
+```{r}
+head(tax_table(glom.fun))
+```
+
+
+##plant##
+
+##Transform OTU table to show relative abundance
+##Samples can also be merged together by a variable in the mapping file
+
+```{r}
+
+fun.abund <- merge_samples(glom.fun, "plant")
+sample_data(fun.abund)$plant <- factor(sample_names(fun.abund))
+fun.abund = transform_sample_counts(fun.abund, function(x) x / sum(x))
+fun.abund
+
+```
+
+
+```{r}
+data_glom.fun <- speedyseq::psmelt(fun.abund)
+data_glom.fun$Genus <- as.character(data_glom.fun$Genus)
+```
+
+##If a phylum has less than 1% abundance, phylum name is changed to <1% abund.
+
+```{r}
+data_glom.fun$Genus[data_glom.fun$Abundance < 0.01] <- "<0.1% abund."
+```
+
+Count the levels present in the Phylum column
+
+```{r}
+Count = length(unique(data_glom.fun$Genus))
+Count
+```
+
+Print out unique phyla names for insertion into barplots in next step.
+
+```{r}
+unique((data_glom.fun$Genus))
+```
+
+```{r}
+venn_data <- list(Rice = unique(data_glom.fun$Genus[data_glom.fun$plant == "Rice"]),
+                  Sugarcane = unique(data_glom.fun$Genus[data_glom.fun$plant == "Sugarcane"]),
+                  Rubber_tree = unique(data_glom.fun$Genus[data_glom.fun$plant == "Rubber tree"]),
+                  Cassava = unique(data_glom.fun$Genus[data_glom.fun$plant == "Cassava"]))
+```
+
+
+
+
+```{r}
+number_of_taxa <- data_glom.fun$Genus %>% 
+  filter(Abundance > 0) %>% 
+  group_by(plant, Genus) %>% 
+  summarise(n = length(Abundance))
+```
+
+
+```{r}
+library(ggvenn)
+```
+
+
+```{r}
+venn <- ggvenn(venn_data, 
+       fill_color = c("#fde725", "#ed6925", "#9c179e", "#0d0887"),
+       fill_alpha = 0.5,
+       show_percentage = FALSE,
+       text_size = 5,
+       set_name_size = 5)
+venn
+```
+
+```{r}
+png("./Figures/venn.png",units = "in", width = 7.5, height = 6, res = 600 )
+venn
+dev.off()
+```
+
+
+
+
+

@@ -1,0 +1,247 @@
+---
+title: "FunGuilds"
+output: html_document
+date: "2023-06-07"
+---
+```{r}
+library(ape)
+library(vegan)
+library(dplyr)
+library(phyloseq)
+library(ggplot2)
+library(ggpubr)
+```
+
+
+######ZONE#####
+```{r}
+#Load mapping file into R
+meta <- read.table("DroughtITS.mapping_file.fix.final.txt",header=TRUE,row.names=1,sep="\t",stringsAsFactors=FALSE)
+sampleData <- sample_data(meta)
+```
+
+```{r}
+#Load reformatted FUNGuild data into R
+FG <- read.table("DroughtITS.guilds.fix1.txt",header=T,sep="\t",row.names=1)
+```
+
+```{r}
+#Select only the column that we need
+FGotus <- select(FG, -(Taxonomy:citationSource))
+FGotumat <- as(as.matrix(FGotus), "matrix")
+FGOTU <- otu_table(FGotumat, taxa_are_rows = TRUE)
+FGtaxmat <- select(FG, confidenceRanking, trophicMode, guild, growthForm)
+FGtaxmat <- as(as.matrix(FGtaxmat),"matrix")
+FGtaxmat[is.na(FGtaxmat)] <- "Unknown"
+FGTAX = tax_table(FGtaxmat)
+```
+
+```{r}
+#Creating phyloseq object
+physeq = phyloseq(FGOTU,FGTAX,sampleData)
+```
+
+```{r}
+#physeq <- subset_samples(physeq, plant == "Rice")
+#physeq <- subset_samples(physeq, plant == "Cassava")
+#physeq <- subset_samples(physeq, plant == "Rubber tree")
+physeq <- subset_samples(physeq, plant == "Sugarcane")
+physeq
+```
+
+```{r}
+physeq.prune = prune_taxa(taxa_sums(physeq) > 1, physeq)
+physeq.prune.nopossible = subset_taxa(physeq.prune, confidenceRanking="Highly Possible")
+physeq.prune.nopossible = subset_taxa(physeq.prune.nopossible, confidenceRanking!="-")
+```
+
+```{r}
+#Create color palette
+cbbPalette <- c("#009E73", "#E69F00", "#56B4E9", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "midnightblue", "lightgreen","saddlebrown", "brown", "aquamarine4","lavenderblush2","snow3", "darkblue", "darkgoldenrod1", "darkseagreen", "darkorchid", "darkolivegreen1", "black","lightskyblue", "darkgreen", "deeppink", "khaki2", "firebrick", "brown1", "darkorange1", "cyan1", "royalblue4", "darksalmon", "darkblue","royalblue4", "dodgerblue3", "steelblue1", "lightskyblue", "darkseagreen", "darkgoldenrod1", "darkseagreen", "darkorchid", "darkolivegreen1", "brown1", "darkorange1", "cyan1", "darkgrey")
+```
+
+```{r}
+sampleData(physeq.prune.nopossible)$zone = factor(sampleData(physeq.prune.nopossible)$zone, levels = c('one', 'two', 'three', 'four', 'five', 'six', 'seven' ,'eight'))
+```
+
+```{r}
+sampleData(physeq.prune.nopossible)$zone = factor(sampleData(physeq.prune.nopossible)$zone, levels = c('Leoi_Petchabun', 'Phu_Wiang', 'Khorat_Plateau', 'Phu_Phan', 'Udon_Sakon_Nakon', 'Bueng_Kan', 'Khorat_Ubon' ,'Buriram')) 
+```
+
+
+```{r}
+#Create a plot
+FUNGuildcom = ggplot(data = psmelt(physeq.prune.nopossible), mapping = aes_string(x = "zone" ,y = "Abundance", fill = "trophicMode" )) + geom_bar(stat="identity", position="fill") + ggtitle("Fungal Trophic Mode Composition (Geolegical zone) in Sugarcane fields") + theme_minimal() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + scale_fill_brewer(palette = "RdBu") + theme_pubr(border= TRUE)
+FUNGuildcom
+```
+
+
+```{r}
+#Save a plot to PDF file
+#pdf("./Fungal Trophic Mode Composition zone.pdf", width = 8, height = 5)
+#FUNGuildcom
+#dev.off()
+#pdf  
+```
+
+```{r}
+png("./Fungal_TrophicMode_zone_sugar_fix.png", units="in", width = 8, height = 5.5, res = 600 )
+FUNGuildcom + theme(legend.position="right") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+dev.off()
+```
+
+
+######PLANT#####
+```{r}
+#Load mapping file into R
+meta <- read.table("DroughtITS.mapping_file.fix.final.txt",header=TRUE,row.names=1,sep="\t",stringsAsFactors=FALSE)
+sampleData <- sample_data(meta)
+```
+
+```{r}
+#Load reformatted FUNGuild data into R
+FG <- read.table("DroughtITS.guilds.fix1.txt",header=T,sep="\t",row.names=1)
+```
+
+```{r}
+#Select only the column that we need
+FGotus <- select(FG, -(Taxonomy:citationSource))
+FGotumat <- as(as.matrix(FGotus), "matrix")
+FGOTU <- otu_table(FGotumat, taxa_are_rows = TRUE)
+FGtaxmat <- select(FG, confidenceRanking, trophicMode, guild, growthForm)
+FGtaxmat <- as(as.matrix(FGtaxmat),"matrix")
+FGtaxmat[is.na(FGtaxmat)] <- "Unknown"
+FGTAX = tax_table(FGtaxmat)
+```
+
+
+
+```{r}
+physeq = phyloseq(FGOTU,FGTAX,sampleData)
+```
+
+
+```{r}
+#critical group #non of the critical fungi was detected
+#physeq.1 = subset_taxa(physeq, Species == "Cryptococcus neoformans")
+#physeq.2 = subset_taxa(physeq, Species == "Candida auris")
+#physeq.3 = subset_taxa(physeq, Species == "Aspergillus fumigatus")
+#physeq.4 = subset_taxa(physeq, Species == "Candida albican")
+
+#High group #only candida tropicalis
+#physeq.5 = subset_taxa(physeq, Species == "Nakaseomyces glabrata")
+#physeq.6 = subset_taxa(physeq, Genus == "Histoplasma")
+physeq.7 = subset_taxa(physeq, Species == "Candida tropicalis")
+#physeq.8 = subset_taxa(physeq, Species == "Candida parapsilosis")
+
+#physeq.17 = subset_taxa(physeq, Genus == "Madurella")
+physeq.18 = subset_taxa(physeq, Species == "Falciformispora senegalensis")
+physeq.19 = subset_taxa(physeq, Species == "Curvularia lunata")
+#physeq.20 = subset_taxa(physeq, Species == "Zopfia rosatii")
+physeq.21 = subset_taxa(physeq, Genus == "Acremonium")
+physeq.22 = subset_taxa(physeq, Genus == "Fusarium")
+physeq.23 = subset_taxa(physeq, Genus == "Rhizopus")
+physeq.24 = subset_taxa(physeq, Genus == "Mucor")
+physeq.25 = subset_taxa(physeq, Genus == "Lichtheimia")
+
+#Medium group
+physeq.9 = subset_taxa(physeq, Genus == "Scedosporium")
+#physeq.10 = subset_taxa(physeq, Species == "Lomentospora prolificans")
+#physeq.11 = subset_taxa(physeq, Genus == "Coccidioides")
+#physeq.12 = subset_taxa(physeq, Species == "Pichia kudriavzeveii")
+#physeq.13 = subset_taxa(physeq, Species == "Cryptococcus gattii")
+physeq.14 = subset_taxa(physeq, Species == "Talaromyces marneffei")
+#physeq.15 = subset_taxa(physeq, Species == "Pneumocystis jirovecii")
+#physeq.16 = subset_taxa(physeq, Genus == "Paracoccidioides")
+
+
+# High group: Candida tropicalis and Medium group: Falciformispora senegalensis, Curvularia lunata, Acremonium spp, Fusarium spp, Rhizopus spp, Mucor spp, Lichtheimia, Scedosporium, Talaromyces marneffei
+
+physeq.merge = merge_phyloseq(physeq.7, physeq.9, physeq.14, physeq.18, physeq.19, physeq.21, physeq.22, physeq.23, physeq.24, physeq.25)
+
+physeq.merge
+```
+
+```{r}
+#physeq <- subset_samples(physeq, zone == "Phu_Wiang")
+#physeq <- subset_samples(physeq, zone == "Udon_Sakon_Nakon")
+physeq <- subset_samples(physeq, zone == "Bueng_Kan")
+#physeq = merge_phyloseq(physeq.two, physeq.five,physeq.six)
+physeq
+```
+
+```{r}
+#Creating phyloseq object
+physeq.prune = prune_taxa(taxa_sums(physeq) > 1, physeq)
+physeq.prune.nopossible = subset_taxa(physeq.prune, confidenceRanking="Highly Possible")
+physeq.prune.nopossible = subset_taxa(physeq.prune.nopossible, confidenceRanking!="-")
+```
+
+```{r}
+#Create color palette
+cbbPalette <- c("#009E73", "#E69F00", "#56B4E9", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "midnightblue", "lightgreen","saddlebrown", "brown", "aquamarine4","lavenderblush2","snow3", "darkblue", "darkgoldenrod1", "darkseagreen", "darkorchid", "darkolivegreen1", "black","lightskyblue", "darkgreen", "deeppink", "khaki2", "firebrick", "brown1", "darkorange1", "cyan1", "royalblue4", "darksalmon", "darkblue","royalblue4", "dodgerblue3", "steelblue1", "lightskyblue", "darkseagreen", "darkgoldenrod1", "darkseagreen", "darkorchid", "darkolivegreen1", "brown1", "darkorange1", "cyan1", "darkgrey")
+```
+
+```{r}
+sampleData(physeq.prune.nopossible)$zone = factor(sampleData(physeq.prune.nopossible)$zone, levels = c('Phu_Wiang','Udon_Sakon_Nakon', 'Bueng_Kan'))
+```
+
+```{r}
+sampleData(physeq.prune.nopossible)$plant <- factor(sampleData(physeq.prune.nopossible)$plant, levels = c('Rice', 'Cassava', 'Rubber tree', 'Sugarcane')) 
+```
+
+```{r}
+#Create a plot
+FUNGuildcom = ggplot(data = psmelt(physeq.prune.nopossible), mapping = aes_string(x = "plant" ,y = "Abundance", fill = "trophicMode" )) +
+  geom_bar(stat="identity", position="fill") + ggtitle("Fungal Trophic Mode Composition in zone 6 (Udon-Sakon Nakon) by plant") + theme_minimal(base_size = 24) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 26)) + scale_fill_brewer(palette = "RdBu") + theme_pubr(border= TRUE) +
+  theme(legend.position="right") 
+FUNGuildcom
+```
+
+```{r}
+#Create a plot
+FUNGuildcom = ggplot(data = psmelt(physeq.prune.nopossible), mapping = aes_string(x = "plant" ,y = "Abundance", fill = "trophicMode" )) +
+  geom_bar(stat="identity", position="fill") + ggtitle("Fungal Trophic Mode Composition in zone 2 (Phu Wiang) by plant") + theme_pubr(base_size = 30) +
+  theme(legend.text = element_text(size = 26)) + scale_fill_brewer(palette = "RdBu") + theme_pubr(border= TRUE) + theme(legend.position="right") 
+FUNGuildcom
+```
+
+```{r}
+FUNGuildcom <- ggplot(data = psmelt(physeq.prune.nopossible), mapping = aes_string(x = "plant", y = "Abundance", fill = "trophicMode")) +
+  geom_bar(stat = "identity", position = "fill") +
+  ggtitle("Fungal Trophic Mode Composition in zone 6 (Bueng Kan) by plant") +
+  scale_fill_brewer(palette = "RdBu") +
+  theme_pubr(base_size = 14, border = TRUE) + # ใส่ theme_pubr ก่อนเพื่อเซ็ตพื้นฐาน
+  theme(
+    legend.position = "right",
+    legend.text = element_text(size = 18) # ตั้งค่าขนาดข้อความ legend ให้ใหญ่ขึ้น
+  )
+FUNGuildcom
+```
+
+
+
+```{r}
+percentage_data <- psmelt(physeq.prune.nopossible) %>%
+group_by(plant, trophicMode) %>%
+summarize(Percentage = sum(Abundance)) %>%
+group_by(plant) %>%
+mutate(Percentage = Percentage / sum(Percentage) * 100)
+```
+
+
+```{r}
+print(percentage_data)
+```
+
+```{r}
+write.csv(percentage_data, file = "percentage_data_zone6.csv", row.names = FALSE)
+```
+
+
+```{r}
+png("./Fungal_TrophicMode_plant_13_resize_4.1_zone6.png", units="in", width = 10, height = 7, res = 1000 )
+FUNGuildcom + theme(legend.position="right")
+dev.off()
+```

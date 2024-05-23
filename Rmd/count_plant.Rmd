@@ -1,0 +1,82 @@
+---
+title: "pie_chart"
+output: html_document
+date: "2024-01-27"
+---
+
+
+```{r}
+library(ape)
+library(vegan)
+library(plyr)
+library(dplyr)
+library(scales)
+library(grid)
+library(reshape2)
+library(phyloseq)
+library(magrittr)
+library(ggplot2)
+library(ggpubr)
+library(data.table)
+library(tidyr)
+library(tidyverse)
+library(multcompView)
+library(VennDiagram)
+library(car)
+library(ggrepel)
+```
+
+```{r}
+total = read.csv("count.csv")
+```
+
+```{r}
+total$zone = factor(total$zone, levels = c('Leoi_Petchabun', 'Phu_Wiang', 'Khorat_Plateau', 'Phu_Phan', 'Udon_Sakon_Nakon', 'Bueng_Kan', 'Khorat_Ubon' ,'Buriram'))
+```
+
+```{r}
+total$plant = factor(total$plant, levels = c('Rice', 'Cassava', 'Rubber_tree', 'Sugarcane'))
+```
+
+
+```{r width = 7, height = 5}
+pie <- ggplot(total, aes(x = "", y = count, fill = plant)) +
+  geom_col(color = "black", width = 1, position = "fill") +
+  coord_polar("y") +
+  facet_wrap(~ zone, ncol= 4) + theme_void() +
+  scale_fill_brewer(palette = "Pastel1")
+pie
+```
+
+```{r}
+png("./Figures/count_plant_color.png", units="in", width = 7, height = 4, res = 600 )
+pie 
+dev.off()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

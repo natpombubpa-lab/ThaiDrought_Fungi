@@ -1,0 +1,336 @@
+---
+title: "Microviz"
+output: html_document
+date: "2023-11-13"
+---
+
+```{r warning=FALSE, message=FALSE}
+library(ape)
+library(vegan)
+library(plyr)
+library(dplyr)
+library(scales)
+library(grid)
+library(reshape2)
+library(phyloseq)
+library(magrittr)
+library(ggplot2)
+library(ggpubr)
+library(data.table)
+library(tidyr)
+library(tidyverse)
+library(multcompView)
+library(VennDiagram)
+library(car)
+#library(Hmisc)
+library(microViz)
+```
+
+
+```{r}
+otus <- read.table("DroughtITS.final_fix.txt",header=T,sep="\t",row.names=1)
+otumat <- as(as.matrix(otus), "matrix")
+OTU = otu_table(otumat, taxa_are_rows = TRUE)
+```
+
+###STEP4: Import taxonomy table for analysis using Phyloseq
+This taxonomy table was created from STEP2.
+```{r}
+taxmat <- read.table("DroughtITS.taxonomy.fix.txt", header=T,sep="\t",row.names=1)
+taxmat <- as(as.matrix(taxmat),"matrix")
+TAX = tax_table(taxmat)
+```
+
+###STEP2: Import tree file for analysis using Phyloseq
+
+```{r warning=FALSE}
+treefile = "DroughtITS.tree.phy"
+tree = read.tree(treefile)
+```
+
+###STEP3: Import mapping file for analysis using Phyloseq
+
+1.Check mapping file before import to R, R will automatically change sample name that starts with number or contain “-” in sample name. If you get error in this step, you should check sample name first. 
+
+2.First column of first row should not start with #, R will not read the first row that starts with #
+
+3. You can choose which samples to include in analysis by indicating specific group in the column
+
+```{r}
+meta = read.table("DroughtITS.mapping_file.fix.final.txt",header=TRUE,row.names=1,sep="\t",stringsAsFactors=FALSE)
+```
+
+Check if your metadata file has been import successfully and correctly, the output will show a table of your metadata file (mapping file). *If you do not have header, you might start your first row with # (remove # and reload your mapping file).
+
+```{r}
+head(meta)
+```
+
+Construct sample_data-class using imported metadata
+```{r warning=FALSE}
+sampleData <- sample_data(meta)
+```
+
+
+###STEP4: Construct Phyloseq object
+To construct phyloseq object, otu table, taxonomy table, and sampleData are required. Phylogenetic tree can be included, but it is not necessary for constructing phyloseq object.
+Construct Phyloseq object called "Physeq"
+
+```{r warning=FALSE}
+physeq = phyloseq(OTU,TAX,sampleData)
+```
+
+###STEP8: Check phyloseq object
+This should indicate that your physeq is a "phyloseq-class experiment-level object"
+
+```{r}
+physeq
+```
+
+```{r}
+#physeq = subset_taxa(physeq, Kingdom != "Rhizaria")
+#physeq = subset_taxa(physeq, Kingdom != "Chromista")
+#physeq = subset_taxa(physeq, Kingdom != "Eukaryota")
+physeq = subset_taxa(physeq, Kingdom == "Fungi")
+physeq
+```
+
+
+
+
+```{r}
+physeq <- tax_fix(physeq)
+physeq <- phyloseq_validate(physeq, remove_undetected = TRUE)
+```
+
+
+```{r}
+physeq %>%
+  tax_transform(trans = "clr", rank = "Order")
+```
+
+```{r}
+physeq %>%
+  tax_transform(trans = "identity", rank = "Order") %>%
+  dist_calc("bray")
+```
+
+```{r}
+physeq$zone <- factor(physeq$zone, levels = c('one', 'two', 'three', 'four', 'five', 'six', 'seven' ,'eight')) 
+```
+
+
+```{r}
+PCA <- physeq %>%
+  tax_transform("clr", rank = "Order") %>%
+  # when no distance matrix or constraints are supplied, PCA is the default/auto ordination method
+  ord_calc(method = "PCA") %>%
+  ord_plot(color = "zone", shape = "plant", plot_taxa = 1:5, size = 2) +
+  scale_colour_brewer(palette = "Dark2")
+```
+
+
+```{r}
+PCA
+```
+
+```{r}
+
+png("./Figures/Beta_Diversity(PCA)_all.png",units = "in", width = 7.5, height = 6, res = 600 )
+PCA
+dev.off()
+
+```
+
+
+
+```{r}
+RDA <- physeq %>%
+  #ps_mutate(
+    #pH = as.numeric(pH == "pH"),
+    #Female = as.numeric(gender == "female"),
+    #Abx. = as.numeric(abx == "abx")
+ # ) %>%
+  tax_transform("clr", rank = "Order") %>%
+  ord_calc(
+    constraints = c("pH", "temp_soil", "water_content", "organic_matter", "nitrogen", "phosphorus", "potassium"),
+    # method = "RDA", # Note: you can specify RDA explicitly, and it is good practice to do so, but microViz can guess automatically that you want an RDA here (helpful if you don't remember the name?)
+    scale_cc = FALSE # doesn't make a difference
+  ) %>%
+  ord_plot(
+    colour = "zone", size = 2, alpha = 0.7, shape = "plant",
+    plot_taxa = 1:8
+  )
+```
+
+```{r}
+RDA
+```
+
+
+```{r}
+png("./Figures/Beta_Diversity(RDA)_all.png",units = "in", width = 7.5, height = 6, res = 600 )
+RDA 
+dev.off()
+```
+
+###plant
+```{r}
+RDA1 <- physeq %>%
+  #ps_mutate(
+    #pH = as.numeric(pH == "pH"),
+    #Female = as.numeric(gender == "female"),
+    #Abx. = as.numeric(abx == "abx")
+ # ) %>%
+  tax_transform("clr", rank = "Order") %>%
+  ord_calc(
+    constraints = c("pH", "temp_soil", "water_content", "organic_matter", "nitrogen", "phosphorus", "potassium"),
+    # method = "RDA", # Note: you can specify RDA explicitly, and it is good practice to do so, but microViz can guess automatically that you want an RDA here (helpful if you don't remember the name?)
+    scale_cc = FALSE # doesn't make a difference
+  ) %>%
+  ord_plot(
+    size = 3, alpha = 0.8, color = "plant", shape = "plant"
+  ) + scale_shape_manual(values = c(15, 16, 17, 18))
+```
+
+```{r}
+RDA1
+```
+
+
+```{r}
+png("./Figures/Beta_Diversity(RDA)_plant.png",units = "in", width = 7.5, height = 6, res = 600 )
+RDA1 
+dev.off()
+```
+
+
+
+
+
+##ZONE2
+```{r}
+physeq.two <- subset_samples(physeq, zone == "Phu_Wiang")
+physeq.five <- subset_samples(physeq, zone == "Udon_Sakon_Nakon")
+physeq.six <- subset_samples(physeq, zone == "Bueng_Kan")
+physeq = merge_phyloseq(physeq.two, physeq.five,physeq.six)
+physeq
+```
+
+```{r}
+#critical group #non of the critical fungi was detected
+#physeq.1 = subset_taxa(physeq, Species == "Cryptococcus neoformans")
+#physeq.2 = subset_taxa(physeq, Species == "Candida auris")
+#physeq.3 = subset_taxa(physeq, Species == "Aspergillus fumigatus")
+#physeq.4 = subset_taxa(physeq, Species == "Candida albican")
+
+#High group #only candida tropicalis
+#physeq.5 = subset_taxa(physeq, Species == "Nakaseomyces glabrata")
+#physeq.6 = subset_taxa(physeq, Genus == "Histoplasma")
+physeq.7 = subset_taxa(physeq, Species == "Candida tropicalis")
+#physeq.8 = subset_taxa(physeq, Species == "Candida parapsilosis")
+
+#physeq.17 = subset_taxa(physeq, Genus == "Madurella")
+physeq.18 = subset_taxa(physeq, Species == "Falciformispora senegalensis")
+physeq.19 = subset_taxa(physeq, Species == "Curvularia lunata")
+#physeq.20 = subset_taxa(physeq, Species == "Zopfia rosatii")
+physeq.21 = subset_taxa(physeq, Genus == "Acremonium")
+physeq.22 = subset_taxa(physeq, Genus == "Fusarium")
+physeq.23 = subset_taxa(physeq, Genus == "Rhizopus")
+physeq.24 = subset_taxa(physeq, Genus == "Mucor")
+physeq.25 = subset_taxa(physeq, Genus == "Lichtheimia")
+
+#Medium group
+physeq.9 = subset_taxa(physeq, Genus == "Scedosporium")
+#physeq.10 = subset_taxa(physeq, Species == "Lomentospora prolificans")
+#physeq.11 = subset_taxa(physeq, Genus == "Coccidioides")
+#physeq.12 = subset_taxa(physeq, Species == "Pichia kudriavzeveii")
+#physeq.13 = subset_taxa(physeq, Species == "Cryptococcus gattii")
+physeq.14 = subset_taxa(physeq, Species == "Talaromyces marneffei")
+#physeq.15 = subset_taxa(physeq, Species == "Pneumocystis jirovecii")
+#physeq.16 = subset_taxa(physeq, Genus == "Paracoccidioides")
+
+
+# High group: Candida tropicalis and Medium group: Falciformispora senegalensis, Curvularia lunata, Acremonium spp, Fusarium spp, Rhizopus spp, Mucor spp, Lichtheimia, Scedosporium, Talaromyces marneffei
+
+physeq.merge = merge_phyloseq(physeq.7, physeq.9, physeq.14, physeq.18, physeq.19, physeq.21, physeq.22, physeq.23, physeq.24, physeq.25)
+
+physeq.merge
+```
+
+
+
+```{r}
+physeq = subset_samples(physeq.merge)
+```
+
+```{r}
+physeq <- tax_fix(physeq)
+physeq <- phyloseq_validate(physeq, remove_undetected = TRUE)
+```
+
+
+```{r}
+physeq %>%
+  tax_transform(trans = "clr", rank = "Order")
+```
+
+```{r}
+physeq %>%
+  tax_transform(trans = "identity", rank = "Order") %>%
+  dist_calc("bray")
+```
+
+```{r}
+physeq$zone <- factor(physeq$zone, levels = c('Leoi_Petchabun', 'Phu_Wiang', 'Khorat_Plateau', 'Phu_Phan', 'Udon_Sakon_Nakon', 'Bueng_Kan', 'Khorat_Ubon' ,'Buriram')) 
+```
+
+
+```{r}
+physeq$plant <- factor(physeq$plant, levels = c(levels = c('Rice', 'Cassava', 'Rubber tree', 'Sugarcane'))) 
+```
+
+```{r}
+PCA_256_taxa <- physeq %>%
+  tax_transform("clr", rank = "Order") %>%
+  # when no distance matrix or constraints are supplied, PCA is the default/auto ordination method
+  ord_calc(method = "PCA") %>%
+  ord_plot(color = "plant", shape = "plant", size = 2, plot_taxa = 1:5) +
+  scale_shape_manual(values = c(15, 16, 17, 18)) + ggtitle("Fungal Beta Diversity (PCA) with top 5 taxonomy in zone 2, 5, and 6 ") +
+  theme_pubr(legend = "right", border = TRUE)
+```
+
+
+```{r}
+PCA_256_taxa
+```
+
+###plant
+```{r}
+RDA256 <- physeq %>%
+  #ps_mutate(
+    #pH = as.numeric(pH == "pH"),
+    #Female = as.numeric(gender == "female"),
+    #Abx. = as.numeric(abx == "abx")
+ # ) %>%
+  tax_transform("clr", rank = "Order") %>%
+  ord_calc(
+    constraints = c("pH", "temp_soil", "water_content", "organic_matter", "nitrogen", "phosphorus", "potassium"),
+    # method = "RDA", # Note: you can specify RDA explicitly, and it is good practice to do so, but microViz can guess automatically that you want an RDA here (helpful if you don't remember the name?)
+    scale_cc = FALSE # doesn't make a difference
+  ) %>%
+  ord_plot(size = 3, alpha = 0.8, color = "plant", shape = "plant") + scale_shape_manual(values = c(15, 16, 17, 18)) + ggtitle("WHO FPPL Fungal Beta Diversity (RDA) with soil properties \nzone 2 (Phu_Wiang), 5 (Udon_Sakon_Nakon), and 6 (Bueng_Kan)") + theme_pubr(border= TRUE, legend = "right") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+RDA256
+```
+
+```{r}
+
+png("./Figures/WHO_Beta_Diversity(PCA)_256.png",units = "in", width = 7.5, height = 6, res = 600 )
+RDA256
+dev.off()
+
+```

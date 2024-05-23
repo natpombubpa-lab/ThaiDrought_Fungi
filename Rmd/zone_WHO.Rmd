@@ -1,0 +1,342 @@
+---
+title: "zone"
+output: html_document
+date: "2023-11-15"
+---
+
+---
+title: "Mapping"
+output:
+  html_document: default
+  word_document: default
+date: "2023-03-23"
+---
+
+```{r}
+library(sf)
+library(rgdal)  
+library(raster) 
+library(ggplot2)
+library(ggpubr)
+```
+  
+```{r}
+map <- st_read(
+  "C:/Users/User/Desktop/mapping/zone/zone.shp", stringsAsFactors = T)
+```
+  
+```{r}
+map
+```
+  
+1. Map+Sample point
+```{r}
+plot <- ggplot() + 
+  geom_sf(aes(fill = as.factor(zone)), data = map, linewidth = 1, alpha = 0.4) +
+  coord_sf() +
+  theme_minimal() +
+  labs(x = "Longtitude (°E)", y = "Latitude (°N)") 
+```
+
+```{r}
+print(plot)
+```
+
+```{r}
+library(readr)
+risk <- read_csv("data.csv")
+zone2 <- read_csv("data1.csv")
+```
+  
+```{r}
+map4 <- plot + geom_jitter(aes(lon, lat, color = Genus), data = risk, size = 3) 
+```
+
+
+```{r}
+map4
+```
+
+```{r}
+
+png("./Figures/map_zone.png", units="in", width = 12, height = 9, res = 600 )
+map4 + theme(legend.position="right")
+dev.off()
+
+```
+
+```{r}
+zone3 <- read_csv("data2.csv")
+```
+```{r}
+map3 <- plot + geom_jitter(aes(lon, lat, colour = Genus), data = zone3, size = 3) 
+```
+
+```{r}
+map3
+```
+
+```{r}
+zone4 <- read_csv("data5.csv")
+```
+
+
+```{r}
+map1 <- plot + geom_jitter(aes(lon, lat, colour = Genus), data = zone4, size = 2) + facet_grid(~plant) + theme_pubr(border= TRUE) 
+```
+
+```{r}
+map1
+```
+
+```{r}
+
+png("./Figures/map_zone_candida2.png", units="in", width = 12, height = 9, res = 600 )
+map1 + theme(legend.position="right")
+dev.off()
+
+```
+
+```{r}
+map5 <- plot + geom_point(aes(lon, lat, colour = Genus), data = zone3, size = 3) + scale_color_manual(values = c("Candida" = "Red"))
+```
+
+```{r}
+#map6 <- plot + geom_point(aes(subset(zone3, Genus %in% c("Candida")))) + 
+  #geom_jitter(aes(lon, lat, colour = Genus), data = zone3, size = 3) #+ scale_color_manual(values = c("Candida" = "Red"))
+```
+
+```{r}
+map5
+```
+
+
+##CANDIDA
+```{r}
+zone5 <- read_csv("data6.csv")
+```
+
+```{r}
+zone5$plant <- factor(zone5$plant, levels = c('Rice', 'Cassava', 'Rubber tree', 'Sugarcane')) 
+```
+
+```{r}
+map7 <- plot + geom_point(aes(lon, lat, colour = Species), data = zone5, size = 2) + facet_grid(~plant) + theme_pubr(border= TRUE) 
+```
+
+```{r}
+map7
+```
+
+
+```{r}
+
+png("./Figures/map_zone_candida3_point.png", units="in", width = 12, height = 9, res = 600 )
+map7 + theme(legend.position="right")
+dev.off()
+
+```
+
+##Falciformispora
+```{r}
+falci <- read_csv("data_falci.csv")
+```
+
+```{r}
+falci$plant <- factor(falci$plant, levels = c('Rice', 'Cassava', 'Rubber tree', 'Sugarcane')) 
+```
+
+```{r}
+map_falci <- plot + geom_point(aes(lon, lat, colour = Species), data = falci, size = 2) + facet_grid(~plant) + theme_pubr(border= TRUE) 
+```
+
+```{r}
+map_falci
+```
+
+```{r}
+
+png("./Figures/map_zone_Falci_point.png", units="in", width = 12, height = 9, res = 600 )
+map_falci + theme(legend.position="right")
+dev.off()
+
+```
+
+#Curvularia
+```{r}
+curvul <- read_csv("data_curvul.csv")
+```
+
+```{r}
+curvul$plant <- factor(curvul$plant, levels = c('Rice', 'Cassava', 'Rubber tree', 'Sugarcane')) 
+```
+
+```{r}
+map_curvul <- plot + geom_point(aes(lon, lat, colour = Species), data = curvul, size = 2) + facet_grid(~plant) + theme_pubr(border= TRUE) 
+```
+
+
+```{r}
+map_curvul
+```
+
+```{r}
+
+png("./Figures/map_zone_curvul_point.png", units="in", width = 12, height = 9, res = 600 )
+map_curvul + theme(legend.position="right")
+dev.off()
+
+```
+
+#Acremonium
+```{r}
+acrem <- read_csv("data_acremonium.csv")
+```
+
+```{r}
+acrem$plant <- factor(acrem$plant, levels = c('Rice', 'Cassava', 'Rubber tree', 'Sugarcane')) 
+```
+
+```{r}
+map_acrem <- plot + geom_point(aes(lon, lat, colour = Species), data = acrem , size = 2) + facet_grid(~plant) + theme_pubr(border= TRUE) 
+```
+
+```{r}
+map_acrem 
+```
+
+```{r}
+
+png("./Figures/map_zone_acrem_species_point.png", units="in", width = 12, height = 9, res = 600 )
+map_acrem  + theme(legend.position="right")
+dev.off()
+
+```
+
+
+#Fusarium
+```{r}
+fusa <- read_csv("data_fusarium.csv")
+```
+
+```{r}
+fusa$plant <- factor(fusa$plant, levels = c('Rice', 'Cassava', 'Rubber tree', 'Sugarcane')) 
+```
+
+```{r}
+map_fusa <- plot + geom_point(aes(lon, lat, colour = Genus), data = fusa , size = 2) + facet_grid(~plant) + theme_pubr(border= TRUE) 
+```
+
+```{r}
+map_fusa
+```
+
+```{r}
+
+png("./Figures/map_zone_fusa_point.png", units="in", width = 12, height = 9, res = 600 )
+map_fusa + theme(legend.position="right")
+dev.off()
+
+```
+
+
+#Rhizopus
+```{r}
+rhizo <- read_csv("data_rhizo.csv")
+```
+
+```{r}
+rhizo$plant <- factor(rhizo$plant, levels = c('Rice', 'Cassava', 'Rubber tree', 'Sugarcane')) 
+```
+
+```{r}
+map_rhizo <- plot + geom_point(aes(lon, lat, colour = Genus), data = rhizo , size = 2) + facet_grid(~plant) + theme_pubr(border= TRUE) 
+```
+
+```{r}
+map_rhizo
+```
+
+```{r}
+
+png("./Figures/map_zone_rhizo_point.png", units="in", width = 12, height = 9, res = 600 )
+map_rhizo + theme(legend.position="right")
+dev.off()
+
+```
+
+
+#mucor
+```{r}
+mucor <- read_csv("data_mucor.csv")
+```
+
+```{r}
+mucor$plant <- factor(mucor$plant, levels = c('Rice', 'Cassava', 'Rubber tree', 'Sugarcane')) 
+```
+
+```{r}
+map_mucor <- plot + geom_point(aes(lon, lat, colour = Species), data = mucor , size = 2) + facet_grid(~plant) + theme_pubr(border= TRUE) 
+```
+
+```{r}
+map_mucor
+```
+
+```{r}
+
+png("./Figures/map_zone_mucor_point.png", units="in", width = 12, height = 9, res = 600 )
+map_mucor + theme(legend.position="right")
+dev.off()
+
+```
+
+#Lichtheimia
+```{r}
+licht <- read_csv("data_licht.csv")
+```
+
+```{r}
+licht$plant <- factor(licht$plant, levels = c('Rice', 'Cassava', 'Rubber tree', 'Sugarcane')) 
+```
+
+```{r}
+map_licht <- plot + geom_point(aes(lon, lat, colour = Genus), data = licht , size = 2) + facet_grid(~plant) + theme_pubr(border= TRUE) 
+```
+
+```{r}
+map_licht
+```
+
+```{r}
+
+png("./Figures/map_zone_licht_piont.png", units="in", width = 12, height = 9, res = 600 )
+map_licht + theme(legend.position="right")
+dev.off()
+
+```
+
+#Scedosporium
+```{r}
+sced <- read_csv("data_sce.csv")
+```
+
+```{r}
+sced$plant <- factor(sced$plant, levels = c('Rice', 'Cassava', 'Rubber tree', 'Sugarcane')) 
+```
+
+```{r}
+map_sced <- plot + geom_jitter(aes(lon, lat, colour = Genus), data = sced , size = 2) + facet_grid(~plant) + theme_pubr(border= TRUE) 
+```
+
+```{r}
+map_sced
+```
+
+```{r}
+
+png("./Figures/map_zone_sced_color.png", units="in", width = 12, height = 9, res = 600 )
+map_sced + theme(legend.position="right")
+dev.off()
+
+```

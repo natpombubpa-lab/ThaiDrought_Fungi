@@ -24,12 +24,23 @@ plot <- ggplot() +
   geom_sf(aes(fill = as.factor(ADM1_EN)), data = map, linewidth = 1, alpha = 0.4) +
   coord_sf() +
   theme_minimal() +
-  labs(x = "Longtitude (°E)", y = "Latitude (°N)") 
+  labs(x = "Longtitude (°E)", y = "Latitude (°N)") + 
+  geom_sf_text(data = map,aes(label = ADM1_EN), size = 3) #+
+  #theme(legend.position="none")
 ```
 
 ```{r}
 print(plot)
 ```
+
+```{r}
+
+png("./Figures/map_color1_new4.png", units="in", width = 12, height = 9, res = 1000 )
+plot
+dev.off()
+
+```
+
 
 ```{r}
 library(readr)

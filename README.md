@@ -1,5 +1,4 @@
-# Fungal Diversity: Agriculture areas Across Northeast Thailand
-## WHO Fungal Priority Pathogens
+# Fungal Diversity and WHO Fungal Priority Pathogens : Agriculture areas Across Northeast Thailand
 This is a repository for fungal diversity investigation in Agriculture areas Across Northeast Thailand.
 
 # Data and Analysis

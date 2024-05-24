@@ -1,14 +1,19 @@
-# Fungal Diversity: Thailand Repeated Drought Area
-This is a repository for fungal diversity investigation in Thailand repeated drought area.
+# Fungal Diversity and WHO Fungal Priority Pathogens : Agriculture areas Across Northeast Thailand
+This is a repository for fungal diversity investigation in Agriculture areas Across Northeast Thailand.
 
 # Data and Analysis
 1. [Data](Data) (AMPtk v.1.5.5 results)
-2. [Alpha Diversity analysis](Alpha_Div.Rmd)
-3. [Overall taxnomic barplots](Taxo_Barplots.Rmd)
-4. [WHO Pathogen taxonomic barplots](Taxo_Barplot_WHO_Pathogens.Rmd)
-5. [Rarefaction curve](Rare_curve.Rmd)
-6. Beta Diversity analysis
-7. Network analysis
+2. [R Markdown](Rmd)
+   - Alpha Diversity
+   - Beta Diversity
+   - Taxonomic Composition
+   - FUNGuild
+   - Heatmap
+   - Indicator Species
+   - Mapping files
+3. [Mapping data](mapping)
+4. Figures
+
 
 ## Note
 - AMPtk resutls are available at `/rhome/npomb001/bigdata/Drought_land_23`

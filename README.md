@@ -12,7 +12,7 @@ This is a repository for fungal diversity investigation in Agriculture areas Acr
    - Indicator Species
    - Mapping files
 3. [Mapping data](mapping)
-4. [Figures](https://drive.google.com/drive/folders/1mrpoWiTxghytPH9nEmWuUus60Ib8LkZH?usp=drive_link)
+4. Figures
 
 
 ## Note

@@ -13,8 +13,8 @@ This is a repository for fungal diversity investigation in Agriculture areas Acr
    - Mapping files
 3. [Mapping data](mapping)
 4. Figures
-   - [Figures](Figures)
-   - [Supplementary](Supplementary)
+   - [Figures](https://github.com/natpombubpa-lab/ThaiDrought_Fungi/tree/main/Figures/Figures)
+   - [Supplementary](https://github.com/natpombubpa-lab/ThaiDrought_Fungi/tree/main/Figures/Supplementary)
 
 
 ## Note
